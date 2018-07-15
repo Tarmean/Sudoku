@@ -29,6 +29,15 @@ library:
   - ghc-prim
   ghc-options:
       - -XBangPatterns
+      # - -ddump-stg
+      # - -dsuppress-all
+      # - -fforce-recomp
+      - -Odph
+      - -fno-liberate-case
+      - -funfolding-use-threshold1000
+      - -funfolding-keeness-factor1000
+      # - -fllvm
+      # - -optlo-O3
   source-dirs: library
 
 executables:

@@ -23,6 +23,7 @@ data Matrix d s
     , mCells ::  U.MVector s (DigitSet, Bool)
     }
 
+data SMaybe a = SJust !a | SNothing
 newtype DigitSet = DigitSet Word16
   deriving (Bits, Eq, Prim)
 

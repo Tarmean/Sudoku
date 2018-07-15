@@ -14,25 +14,17 @@ import Data.Bits
 import Control.Monad.Primitive
 import Control.Monad
 import Shape
+import Data.Foldable
 
 
 main :: IO ()
 main = do
     content <- readFile "resources/sudoku17.txt"   
-    -- let step acc a = do
-    --                     r <- solveSudoku a
-    --                     if r then return (acc+1) else return acc
-    -- let loop (x:xs) i = do
-    --                         b <- solveSudoku x
-    --                         if not b
-    --                         then return i
-    --                         else loop xs (i+1)
-    -- n <- loop (lines content) 0
-    mapM_ solveSudoku (take 3000 $ lines content)
-    -- print n
-    -- mapM solveSudoku (lines content)
-    -- i <- foldM step (0::Int) (take 3000 $ lines content)
-    -- print i
+    let step a acc = do
+                        r <- solveSudoku a
+                        if r then return (acc+1) else return acc
+    n <- foldrM step 0 (lines content )
+    print n
     return ()
 
 
@@ -40,39 +32,51 @@ solveSudoku :: String -> IO Bool
 solveSudoku line =  do
     m <- parseSudoku line :: IO (Matrix (RowWise DIM2) RealWorld)
     solve m
-    return True
     -- done <- S.and $ S.map snd $ G.mstream (mCells m)
     -- return done
 
 
 {-# INLINE solve #-}
-solve ::  Matrix (RowWise DIM2) (PrimState IO) -> IO ()
+solve ::  Matrix (RowWise DIM2) (PrimState IO) -> IO Bool
 solve m = loopSingletons
   where
       loopSingletons = do
-          r <- applySingletons m
-          debug
-          if r
-          then loopSingletons
-          else loopHiddenSingletons
+          _ <- applySingletons m
+          debug 's'
+
+          loopHiddenSingletons
       loopHiddenSingletons = do
           r <- applyHiddenSingletons m
-          debug
+          debug 'h'
           if r
           then loopHiddenSingletons
           else loopPreemptives
       loopPreemptives = do
           r <- applyPreemptives m
-          debug
+          debug 'p'
           if r
-          then loopSingletons
-          else  return ()
-      -- recurse m 
-      debug =  return ()
+          then loopHiddenSingletons
+          else  recurse
+      recurse = do
+          firstUnfixed <- headMaybe (toStream m)
+          case firstUnfixed of
+              SJust (idx, set) -> shortCutFromTo 1 9 (\i -> doRecursion set idx i m)
+              SNothing -> return True
+      debug x   = return ()
         -- = do
-          -- putStrLn ('s':replicate 107 '-')
-          -- printMatrix m
+        --   putStrLn (x:replicate 107 '-')
+        --   printMatrix m
           
+{-# INLINE doRecursion #-}
+doRecursion :: (m ~ IO) => DigitSet -> Int -> Int -> Matrix (RowWise DIM2) (PrimState m) -> m Bool
+doRecursion oldSet idx curTry m
+    | (mask .&. oldSet) == DigitSet 0 = return False
+    | otherwise = do
+        vec' <-  G.clone (mCells  m)
+        let m' = (Matrix (mLayout m) vec')
+        fixCell idx mask m'
+        solve m'
+    where mask = toDigitSet curTry
 printMatrix :: Matrix (RowWise DIM2) RealWorld -> IO ()
 printMatrix m =
      forM_ [0..8] $ \i -> do
@@ -98,7 +102,7 @@ allRegions f m = do
 
 {-# INLINE applySingletons #-}
 applySingletons :: forall m. (PrimMonad m) => Matrix (RowWise DIM2) (PrimState m) -> m Bool
-applySingletons m = shortcutMatrixM step m
+applySingletons m = mapMatrixM step m
   where
     {-# INLINE step #-}
     step !idx !set
@@ -118,10 +122,11 @@ preemptivePass :: (LayoutI l, PrimMonad m) => Matrix l (PrimState m) -> m Bool
 preemptivePass m = searchPreemptives applySet (S.map snd $ toStream m)
   where
     {-# INLINE applySet #-}
-    applySet !mask = shortcutMatrixM (applyMask m mask) m
+    applySet !mask = mapMatrixM (applyMask m mask) m
+
 {-# INLINE applyMask #-}
 applyMask :: (PrimMonad m) => Matrix l (PrimState m) -> DigitSet -> Int -> DigitSet -> m Bool
-applyMask m mask idx cur
+applyMask m !mask !idx !cur
     | cur `isSubsetOf` mask = return False
     | cur' == cur = return False
     | isSingleton cur' = do
@@ -143,9 +148,8 @@ searchPreemptives applySet (S.Stream step s0) = loop s0 0 (DigitSet 0)
             S.Skip state' -> loop state' count set
             S.Yield a state' -> do
                 r <- (check state' (count+1) (a .|. set))
-                if r
-                then return True
-                else loop state' count set
+                s <- loop state' count set
+                return (r || s)
     {-# INLINE check #-}
     check !state' !count' !set'
         | count' == popCount set' = applySet set'
@@ -207,40 +211,30 @@ isSubsetOf a b = (b .|. a) == b
 (\\) a b = complement b .&. a
 
 
-{-# INLINE mapLayout #-}
-mapLayout 
-    :: (LayoutI li, PrimMonad m)
-    => (DigitSet -> DigitSet) -> Matrix l (PrimState m) -> (l -> li) -> m ()
-mapLayout f m !l = mapMatrix f (layoutMatrix l m)
-
 {-# INLINE fixCell #-}
 fixCell :: forall l m. (PrimMonad m) => Int -> DigitSet -> Matrix l (PrimState m) -> m ()
 fixCell i mask m = do
     writeLin m i (mask, True)
     let
         {-# INLINE apply #-}
-        apply :: LayoutI li => (RowWise DIM2 -> li) -> m ()
+        apply :: LayoutI li => (RowWise DIM2 -> li) -> m Bool
         apply f = mapMatrixM step (layoutMatrix f mRowWise)
         mRowWise :: Matrix (RowWise DIM2) (PrimState m)
         mRowWise = (Matrix (RowWise (DIM2 9 9)) (mCells m))
 
         {-# INLINE step #-}
-        step :: Int -> DigitSet -> m ()
-        step i' s = void (applyMask m mask i' s)
+        step :: Int -> DigitSet -> m Bool 
+        step i' s = applyMask m mask i' s
         -- DIM2 row column = fromFlatIndex (unRowWise (mLayout m)) i
         -- FIXME: this
         (row, column) = i `divMod` 9
         sRow = (row `div` 3) * 3
         sCol = (column `div` 3) * 3
 
-    apply (toRow row)
-    apply (toCol column)
-    apply (window (sRow, sCol) (3, 3))
-
--- {-# INLINE write #-}
--- setCell :: (Layout l, PrimMonad m) => Matrix l (PrimState m) -> Index l -> (DigitSet, Bool) -> m ()
--- setCell (Matrix l vec) idx v = G.write vec (toFlatIndex l idx) v
-
+    _ <- apply (toRow row)
+    _ <- apply (toCol column)
+    _ <- apply (window (sRow, sCol) (3, 3))
+    return ()
 
 {-# INLINE writeLin #-}
 writeLin ::  (PrimMonad m) => Matrix l (PrimState m) -> Int -> (DigitSet, Bool) -> m ()

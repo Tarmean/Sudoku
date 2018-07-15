@@ -8,6 +8,8 @@ import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Control.Monad.Primitive
 import Types
 import Shape
+import Data.Monoid
+import GHC.Types ( SPEC(..) )
 
 {-# INLINE streamSegment #-}
 streamSegment :: (LayoutI layout, PrimMonad m, s ~ PrimState m) => Matrix layout s -> B.Bundle m (v s) (Int, DigitSet)
@@ -24,7 +26,7 @@ toFullStream (Matrix layout vec) = (S.Stream step 0)
   where
     
     {-# INLINE step #-}
-    step !i 
+    step !i
       | i < len = do
           let idx = toFlatIndex layout i
           (val, isFixed) <- vec `G.read` idx
@@ -32,42 +34,49 @@ toFullStream (Matrix layout vec) = (S.Stream step 0)
       | otherwise = pure S.Done
     len = size (extend layout)
 
-{-# INLINE mapMatrix #-}
-mapMatrix :: (LayoutI l, PrimMonad m) => (DigitSet -> DigitSet) -> Matrix l (PrimState m) -> m ()
-mapMatrix f m@(Matrix _ vec) = mapMatrixM f' m
-  where f' idx v = let v' = f v in G.write vec idx (v', False)
 
 
 -- -- TODO: abstract over Transformation shape and don't pass Matrix
-{-# INLINE mapMatrixM #-}
-mapMatrixM :: (LayoutI l, PrimMonad m, Monoid acc) => (Int -> DigitSet -> m acc) -> Matrix l (PrimState m) -> m acc
-mapMatrixM f m = bFold (uncurry f) (streamSegment m)
+{-# INLINE[1] mapMatrixM #-}
+mapMatrixM :: (LayoutI l, PrimMonad m) => (Int -> DigitSet -> m Bool) -> Matrix l (PrimState m) -> m Bool
+mapMatrixM f m = getAny <$> bFold (\(i, j) -> Any <$> f i j) (streamSegment m)
          
-{-# INLINE shortcutMatrixM #-}
+{-# INLINE[1] shortcutMatrixM #-}
 shortcutMatrixM :: (LayoutI l, PrimMonad m) => (Int -> DigitSet -> m Bool) -> Matrix l (PrimState m) -> m Bool
 shortcutMatrixM f m = sShortCircuit (uncurry f) (toStream m)
 
-{-# INLINE bFold #-}
+{-# INLINE[1] bFold #-}
 bFold :: (Monad m, Monoid acc) => (b -> m acc) -> B.Bundle m v b -> m acc
 bFold f = B.foldlM step mempty
   where
     {-# INLINE step #-}
     step !a !b = fmap (a <>) (f b)
 
-{-# INLINE sShortCircuit #-}
+{-# INLINE[1] sShortCircuit #-}
 sShortCircuit :: (Monad m) => (b -> m Bool) ->  S.Stream m b -> m Bool
-sShortCircuit f (S.Stream step state0) = loop state0
+sShortCircuit f (S.Stream step state0) = loop SPEC state0
   where
-    loop s = do
+    loop !_ s = do
         m <- step s
         case m of
-            S.Skip s' -> loop s'
+            S.Skip s' -> loop SPEC s'
             S.Done -> return False
             S.Yield a s' -> do
                 r <- f a
                 if r
                 then return True
-                else loop s'
+                else loop SPEC s'
 
 
 
+headMaybe :: Monad m => S.Stream m a -> m (SMaybe a)
+{-# INLINE[1] headMaybe #-}
+headMaybe (S.Stream step t) = head_loop SPEC t
+  where
+    head_loop !_ s
+      = do
+          r <- step s
+          case r of
+            S.Yield x _  -> return (SJust x)
+            S.Skip    s' -> head_loop SPEC s'
+            S.Done       -> return SNothing
