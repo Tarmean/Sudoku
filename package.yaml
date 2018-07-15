@@ -1,0 +1,69 @@
+# This YAML file describes your package. Stack will automatically generate a
+# Cabal file when you run `stack build`. See the hpack website for help with
+# this file: <https://github.com/sol/hpack>.
+name: Sudoku
+version: '0.0.0'
+github: "githubuser/Sudoku"
+license: MIT
+author: "Author name here"
+maintainer: "Author name here"
+# synopsis: A new Haskeleton package.
+# description: Sudoku is a new Haskeleton package.
+# category: Other
+
+extra-source-files:
+- CHANGELOG.md
+- LICENSE.md
+- package.yaml
+- README.md
+- stack.yaml
+
+ghc-options: -Wall
+
+library:
+  dependencies:
+  - base
+  - vector
+  - logict
+  - primitive
+  - ghc-prim
+  ghc-options:
+      - -XBangPatterns
+  source-dirs: library
+
+executables:
+  Sudoku:
+    source-dirs: executable
+    main: Main.hs
+    dependencies:
+    - base
+    - Sudoku
+    ghc-options:
+    - -rtsopts
+
+benchmarks:
+  Sudoku-benchmarks:
+    source-dirs: benchmark
+    main: Main.hs
+    dependencies:
+    - base
+    - Sudoku
+    - criterion
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+
+tests:
+  Sudoku-test-suite:
+    source-dirs: test-suite
+    main: Main.hs
+    dependencies:
+    - base
+    - Sudoku
+    - tasty
+    - tasty-hspec
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
