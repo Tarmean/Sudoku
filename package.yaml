@@ -27,6 +27,7 @@ library:
   - logict
   - primitive
   - ghc-prim
+  - bytestring
   ghc-options:
       - -XBangPatterns
       # - -ddump-stg

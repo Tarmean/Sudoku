@@ -74,4 +74,8 @@ square r c = Range (S.Stream step (SPair 0 0)) 9
        else
          if b < 2
          then pure $ S.Skip (SPair 0 (b+1))
-         else pure S.Done
+         else pure S.Done -- on 3,2 we are done
+
+get2D :: Int -> (Int, Int)
+get2D i = (row, col)
+  where (row, col) = i `divMod` 9

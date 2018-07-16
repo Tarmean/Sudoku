@@ -5,18 +5,22 @@ import Shape
 import Types
 import Data.Bits
 import StreamSlice
+import Trace
+import Data.Vector.Generic.Mutable as G
 
 {-# INLINE fixCell #-}
 fixCell :: forall m. (PrimMonad m) => Int -> DigitSet -> Matrix (PrimState m) -> m ()
 fixCell i mask m = do
+    (oldMask, oldFixed) <- G.read (mCells m) i
     writeLin m i (mask, True)
     let
         {-# INLINE apply #-}
         apply = mapMatrixM (applyMask m mask) m
 
         (r, c) = i `divMod` 9
-        sRow = (r `div` 3) * 3
-        sCol = (c `div` 3) * 3
+        sRow = (r `div` 3)
+        sCol = (c `div` 3)
+    trace (show (r, c) ++ ": old=(" ++ show oldMask ++ "," ++ show oldFixed ++ "), new(" ++ show mask ++ ")") (return ())
 
     _ <- apply (row r)
     _ <- apply (col c)

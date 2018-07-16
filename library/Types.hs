@@ -6,6 +6,8 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE  FlexibleContexts#-}
+{-# LANGUAGE ConstraintKinds #-}
+-- {-# LANGUAGE QuantifiedConstraints #-}
 module Types where
 import Data.Vector.Unboxed 
 import qualified Data.Vector.Primitive as P
@@ -19,6 +21,9 @@ import GHC.Word
 import Data.Vector.Fusion.Util (Id)
 import qualified Data.Vector.Unboxed.Mutable as U
 import Control.Monad.Primitive
+import Data.Coerce
+
+-- class (forall a b. Coercible a b => Coercible (m a) (m b)) => Representational m where
 
 data Matrix s
     = Matrix
@@ -33,7 +38,7 @@ data Range
   { rIndices :: (S.Stream Id Int)
   , rLen :: !Int
   }
-data SMaybe a = SJust !a | SNothing
+data SMinimum = SJust !Int !DigitSet !Int | SNothing
 newtype DigitSet = DigitSet Word16
   deriving (Bits, Eq, Prim)
 

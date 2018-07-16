@@ -6,12 +6,15 @@ import Data.Bits
 import Types
 import WriteCell
 import StreamSlice
+import Trace
+import Shape
+import Data.Monoid
 
 data HiddenSingleton = None | OnlyAt !Int | Multiple
 
 {-# INLINE applyHiddenSingletons #-}
-applyHiddenSingletons ::  (PrimMonad m) => Matrix  (PrimState m) -> m Bool
-applyHiddenSingletons m = allRegions hiddenSingletonPass
+applyHiddenSingletons ::  (PrimMonad m) => Matrix (PrimState m) -> m Bool
+applyHiddenSingletons m = getAny <$> mapRegions hiddenSingletonPass
   where
 
     {-# INLINE hiddenSingletonPass #-}
@@ -19,14 +22,14 @@ applyHiddenSingletons m = allRegions hiddenSingletonPass
 
     {-# INLINE step #-}
     step !r !i = do
-        let !mask = toDigitSet i 
+        let !mask = toDigitSet i
         h <- searchHiddenSingleton mask (toStream m r)
         case h of
            OnlyAt idx -> do
-               writeLin m idx (mask, False)
+               trace ("hidden singleton : " ++ show (get2D idx)) (return ())
                fixCell idx mask m
-               return True
-           _ -> return False
+               return (Any True)
+           _ -> return (Any False)
 
 {-# INLINE searchHiddenSingleton #-}
 searchHiddenSingleton :: Monad m => DigitSet -> S.Stream m (Int, DigitSet) -> m HiddenSingleton
