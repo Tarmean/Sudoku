@@ -13,23 +13,17 @@ import Shape
 import Data.Monoid
 import Data.Bits
 import GHC.Types ( SPEC(..) )
-import Data.Coerce
 
-{-# INLINE mapRegions #-}
-mapRegions :: (Monad m, Monoid acc, Eq acc) => (Range -> m acc) -> m acc
-mapRegions f = do
+{-# INLINE anyRegions #-}
+anyRegions :: Monad m => (Range -> m Bool) -> m Bool
+anyRegions f = do
    a <- shortCutFromTo 0 8 (f . row)
-   if mempty /= a then return a
+   if a then return True
    else do
        b <- shortCutFromTo 0 8 (f . col)
-       if mempty /= b then return b
-       else shortCutFromTo 0 2 (\i -> shortCutFromTo 0 2 (\j -> f (square i j)))
-{-# INLINE anyRegions #-}
-{-# INLINE allRegions #-}
-anyRegions::  forall m. (Coercible (m Any) (m Bool), Monad m) => (Range -> m Bool) -> m Bool
-anyRegions f = coerce (mapRegions (coerce f :: Range -> m Any)) :: m Bool
-allRegions ::   forall m. (Coercible (m All) (m Bool), Monad m) => (Range -> m Bool) -> m Bool
-allRegions f = coerce (mapRegions (coerce f :: Range -> m All)) :: m Bool
+       if b then return True
+       else
+           shortCutFromTo 0 2 (\i -> shortCutFromTo 0 2 (\j -> f (square i j)))
 
 
 {-# INLINE toStream #-}
@@ -42,7 +36,6 @@ toFullStream (Matrix vec) r = S.mapM doRead (liftStream $ rIndices r)
   where
     doRead i = format i <$> G.read vec i
     format i (set, fixed) = (i, set, fixed)
-{-# INLINE liftStream #-}
 liftStream :: Monad m => S.Stream Id a -> S.Stream m a
 liftStream (S.Stream step s) = S.Stream (return . unId . step) s
 
@@ -76,18 +69,18 @@ sShortCircuit f z p (S.Stream step state0) = loop SPEC z state0
                 then return True
                 else loop SPEC acc' s'
 
+
 {-# INLINE shortCutFromTo #-}
-shortCutFromTo :: (Monad m, Eq acc, Monoid acc) => Int -> Int -> (Int -> m acc) ->  m acc
-shortCutFromTo zero end step = loop mempty zero
+shortCutFromTo :: (Monad m) => Int -> Int -> (Int -> m Bool) -> m Bool
+shortCutFromTo zero end p = loop zero
   where
-    loop acc i
-      | i >= end = return acc
+    loop i
+      | i >= end = return False
       | otherwise = do
-        r <- step i
-        let acc' = r <> acc
-        if mempty /= acc'
-        then return acc'
-        else loop acc' (i+1)
+        r <- p i
+        if r
+        then return True
+        else loop (i+1)
 
 {-# INLINE minimumSet #-}
 minimumSet :: Monad m => S.Stream m (Int, DigitSet) -> m SMinimum

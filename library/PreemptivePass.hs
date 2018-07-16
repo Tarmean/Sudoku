@@ -13,11 +13,9 @@ import Data.Vector.Fusion.Util (unId)
 import Data.Vector.Fusion.Stream.Monadic (toList)
 import Shape
 import Trace
-import Data.Coerce
-import Data.Monoid
 
 {-# INLINE applyPreemptives #-}
-applyPreemptives :: (Coercible (m Any) (m Bool), PrimMonad m) => Matrix  (PrimState m) -> m Bool
+applyPreemptives :: (PrimMonad m) => Matrix  (PrimState m) -> m Bool
 applyPreemptives = anyRegions . preemptivePass
 
 {-# INLINE preemptivePass #-}

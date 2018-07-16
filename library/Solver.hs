@@ -11,40 +11,41 @@ import WriteCell
 import StreamSlice
 import PrintMatrix
 import TestSolution
-import Data.Monoid
-import Trace
-import Data.Coerce
 
 {-# INLINE solve #-}
 solve ::  Matrix  (PrimState IO) -> IO Bool
-solve m = debug 's' m >> loopHiddenSingletons
+solve m = debug 's' >> loopHiddenSingletons
   where
       loopHiddenSingletons = do
           r <- applyHiddenSingletons m
-          debug 'h' m
+          debug 'h'
           if r
           then loopHiddenSingletons
           else loopPreemptives
       loopPreemptives = do
           r <- applyPreemptives m
-          debug 'p' m
+          debug 'p'
           if r
           then loopHiddenSingletons
           else  recurse
       recurse = do
           firstUnfixed <- minimumSet (toStream m allFields)
-          debug 'r' m
+          debug 'r'
           case firstUnfixed of
-              SJust idx set _ -> coerce (shortCutFromTo 1 9 (\i -> doRecursion set idx i m)) :: IO Bool
+              SJust idx set _ -> shortCutFromTo 1 9 (\i -> doRecursion set idx i m)
               SNothing -> checkComplete m
+      debug x = return ()
+        -- = do
+        --   putStrLn (x:replicate 107 '-')
+        --   printMatrix m
         --
 {-# INLINE doRecursion #-}
-doRecursion :: (m ~ IO) => DigitSet -> Int -> Int -> Matrix  (PrimState m) -> m Any
+doRecursion :: (m ~ IO) => DigitSet -> Int -> Int -> Matrix  (PrimState m) -> m Bool
 doRecursion oldSet idx curTry m
-    | not (mask `isSubsetOf` oldSet) = return (Any False)
+    | not (mask `isSubsetOf` oldSet) = return False
     | otherwise = do
         vec' <-  G.clone (mCells  m)
         let m' = (Matrix vec')
         fixCell idx mask m'
-        coerce (solve m') :: IO Any
+        solve m'
     where mask = toDigitSet curTry
