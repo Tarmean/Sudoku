@@ -11,18 +11,28 @@ import Data.Vector.Unboxed
 import qualified Data.Vector.Primitive as P
 import qualified Data.Vector.Generic.Mutable as M
 import qualified Data.Vector.Generic as G
+import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Control.Monad (liftM)
 import Data.Primitive.Types
 import Data.Bits
 import GHC.Word
+import Data.Vector.Fusion.Util (Id)
 import qualified Data.Vector.Unboxed.Mutable as U
+import Control.Monad.Primitive
 
-data Matrix d s
+data Matrix s
     = Matrix
-    { mLayout :: !d
-    , mCells ::  U.MVector s (DigitSet, Bool)
+    { mCells ::  U.MVector s (DigitSet, Bool)
     }
+{-# INLINE writeLin #-}
+writeLin ::  (PrimMonad m) => Matrix (PrimState m) -> Int -> (DigitSet, Bool) -> m ()
+writeLin = M.write . mCells
 
+data Range
+  = Range
+  { rIndices :: (S.Stream Id Int)
+  , rLen :: !Int
+  }
 data SMaybe a = SJust !a | SNothing
 newtype DigitSet = DigitSet Word16
   deriving (Bits, Eq, Prim)

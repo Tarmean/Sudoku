@@ -1,49 +1,56 @@
 {-# Language TypeFamilies #-}
 {-# Language ExistentialQuantification #-}
+{-# Language ScopedTypeVariables #-}
 module StreamSlice where
 import qualified Data.Vector.Fusion.Bundle.Monadic as B
 import qualified Data.Vector.Fusion.Bundle.Size as B
 import qualified Data.Vector.Generic.Mutable as G
 import qualified Data.Vector.Fusion.Stream.Monadic as S
+import Data.Vector.Fusion.Util (Id(..))
 import Control.Monad.Primitive
 import Types
 import Shape
 import Data.Monoid
 import GHC.Types ( SPEC(..) )
 
+{-# INLINE allRegions #-}
+allRegions :: Monad m => (Range -> m Bool) -> m Bool
+allRegions f = do
+   a <- shortCutFromTo 0 8 (f . row)
+   if a then return True
+   else do
+       b <- shortCutFromTo 0 8 (f . col)
+       if b then return True
+       else
+           shortCutFromTo 0 2 (\i -> shortCutFromTo 0 2 (\j -> f (square i j)))
+
 {-# INLINE streamSegment #-}
-streamSegment :: (LayoutI layout, PrimMonad m, s ~ PrimState m) => Matrix layout s -> B.Bundle m (v s) (Int, DigitSet)
-streamSegment m = B.fromStream (toStream m) (B.Exact len)
-  where len = size $ extend $ mLayout m
+streamSegment :: (PrimMonad m, s ~ PrimState m) => Matrix s -> Range -> B.Bundle m (v s) (Int, DigitSet)
+streamSegment m r = B.fromStream (toStream m r) (B.Exact (rLen r))
 
 {-# INLINE toStream #-}
-toStream :: (LayoutI layout, PrimMonad m, s ~ PrimState m) => Matrix layout s -> S.Stream m (Int, DigitSet)
-toStream = S.map (\(a,b,_) -> (a, b)) . S.filter (\(_,_,b) -> not b) . toFullStream
+toStream :: (PrimMonad m, s ~ PrimState m) => Matrix s -> Range -> S.Stream m (Int, DigitSet)
+toStream m r = S.map (\(a,b,_) -> (a, b)) . S.filter (\(_,_,b) -> not b) $ toFullStream m r
 
 {-# INLINE toFullStream #-}
-toFullStream :: (LayoutI layout, PrimMonad m, s ~ PrimState m) => Matrix layout s -> S.Stream m (Int, DigitSet, Bool)
-toFullStream (Matrix layout vec) = (S.Stream step 0)
+toFullStream :: forall s m. (PrimMonad m, s ~ PrimState m) =>  Matrix s -> Range ->S.Stream m (Int, DigitSet, Bool)
+toFullStream (Matrix vec) r = S.mapM doRead (liftStream $ rIndices r)
   where
-    
-    {-# INLINE step #-}
-    step !i
-      | i < len = do
-          let idx = toFlatIndex layout i
-          (val, isFixed) <- vec `G.read` idx
-          pure $ S.Yield (idx, val, isFixed) (i+1)
-      | otherwise = pure S.Done
-    len = size (extend layout)
+    doRead i = format i <$> G.read vec i
+    format i (set, fixed) = (i, set, fixed)
+liftStream :: Monad m => S.Stream Id a -> S.Stream m a
+liftStream (S.Stream step s) = S.Stream (return . unId . step) s
 
 
 
 -- -- TODO: abstract over Transformation shape and don't pass Matrix
 {-# INLINE[1] mapMatrixM #-}
-mapMatrixM :: (LayoutI l, PrimMonad m) => (Int -> DigitSet -> m Bool) -> Matrix l (PrimState m) -> m Bool
-mapMatrixM f m = getAny <$> bFold (\(i, j) -> Any <$> f i j) (streamSegment m)
+mapMatrixM :: (PrimMonad m) => (Int -> DigitSet -> m Bool) -> Matrix (PrimState m) -> Range -> m Bool
+mapMatrixM f m r = getAny <$> bFold (\(i, j) -> Any <$> f i j) (streamSegment m r)
          
 {-# INLINE[1] shortcutMatrixM #-}
-shortcutMatrixM :: (LayoutI l, PrimMonad m) => (Int -> DigitSet -> m Bool) -> Matrix l (PrimState m) -> m Bool
-shortcutMatrixM f m = sShortCircuit (uncurry f) (toStream m)
+shortcutMatrixM :: ( PrimMonad m) => (Int -> DigitSet -> m Bool) -> Matrix (PrimState m) -> Range -> m Bool
+shortcutMatrixM f m r = sShortCircuit (uncurry f) (toStream m r)
 
 {-# INLINE[1] bFold #-}
 bFold :: (Monad m, Monoid acc) => (b -> m acc) -> B.Bundle m v b -> m acc
@@ -68,6 +75,17 @@ sShortCircuit f (S.Stream step state0) = loop SPEC state0
                 else loop SPEC s'
 
 
+{-# INLINE shortCutFromTo #-}
+shortCutFromTo :: (Monad m) => Int -> Int -> (Int -> m Bool) -> m Bool
+shortCutFromTo zero end p = loop zero
+  where
+    loop i
+      | i >= end = return False
+      | otherwise = do
+        r <- p i
+        if r
+        then return True
+        else loop (i+1)
 
 headMaybe :: Monad m => S.Stream m a -> m (SMaybe a)
 {-# INLINE[1] headMaybe #-}
