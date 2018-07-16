@@ -11,7 +11,6 @@ import Data.Vector.Generic.Mutable as G
 {-# INLINE fixCell #-}
 fixCell :: forall m. (PrimMonad m) => Int -> DigitSet -> Matrix (PrimState m) -> m ()
 fixCell i mask m = do
-    (oldMask, oldFixed) <- G.read (mCells m) i
     writeLin m i (mask, True)
     let
         {-# INLINE apply #-}
@@ -20,6 +19,8 @@ fixCell i mask m = do
         (r, c) = i `divMod` 9
         sRow = (r `div` 3)
         sCol = (c `div` 3)
+
+    (oldMask, oldFixed) <- G.read (mCells m) i
     trace (show (r, c) ++ ": old=(" ++ show oldMask ++ "," ++ show oldFixed ++ "), new(" ++ show mask ++ ")") (return ())
 
     _ <- apply (row r)
@@ -30,8 +31,8 @@ fixCell i mask m = do
 {-# INLINE applyMask #-}
 applyMask :: (PrimMonad m) => Matrix (PrimState m) -> DigitSet -> Int -> DigitSet -> m Bool
 applyMask m !mask !idx !cur
-    | cur `isSubsetOf` mask = return False
     | cur' == cur = return False
+    | cur `isSubsetOf` mask = return False
     | isSingleton cur' = do
         fixCell idx cur' m
         return True

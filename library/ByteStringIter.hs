@@ -16,8 +16,8 @@ import WriteCell
 
 data ParserState = ParserState !Int !(Ptr Word8) !Int
 
-digitSets :: UN.Vector DigitSet
-digitSets = V.iterateN 9 (`shiftL` 1) (DigitSet 1)
+-- digitSets :: UN.Vector DigitSet
+-- digitSets = V.iterateN 9 (`shiftL` 1) (DigitSet 1)
 
 {-# INLINE step #-}
 step :: ParserState -> IO (S.Step ParserState (Matrix RealWorld))
@@ -30,12 +30,13 @@ step (ParserState offset ptr len)
               | cur >= 81 = return ()
               | otherwise = do
                   digit <- peek (ptr `plusPtr` (offset + cur)) :: IO Word8
-                  if digit /= 46
-                  then fixCell cur (digitSets V.! fromIntegral (digit - 49 )) m
-                  else return ()
+                  case digit of
+                    46 ->  return ()
+                    i | i >= 49 && i <= 58 -> fixCell cur (DigitSet 1 `shiftL` fromIntegral (digit - 49 )) m
+                    _ -> error ("Illegal character " ++ [toEnum$ fromIntegral digit])
                   loop (cur + 1)
         loop 0
-        return (S.Yield (Matrix vec) (ParserState (offset + 82) ptr len))
+        return (S.Yield (Matrix vec) (ParserState (offset + 83) ptr len))
 
 {-# INLINE withStreamM #-}
 withStreamM :: ByteString -> (S.Stream IO (Matrix RealWorld) -> IO r) -> IO r
