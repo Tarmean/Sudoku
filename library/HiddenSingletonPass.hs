@@ -11,9 +11,9 @@ import Shape
 
 data HiddenSingleton = None | OnlyAt !Int | Multiple
 
-{-# INLINE applyHiddenSingletons #-}
-applyHiddenSingletons ::  (PrimMonad m) => Matrix (PrimState m) -> m Bool
-applyHiddenSingletons m = anyRegions hiddenSingletonPass
+-- {-# INLINE applyHiddenSingletons #-}
+applyHiddenSingletons ::  Matrix (PrimState IO) -> IO Bool
+applyHiddenSingletons !m = anyRegions hiddenSingletonPass
   where
 
     {-# INLINE hiddenSingletonPass #-}
@@ -31,11 +31,11 @@ applyHiddenSingletons m = anyRegions hiddenSingletonPass
            _ -> return False
 
 {-# INLINE searchHiddenSingleton #-}
-searchHiddenSingleton :: Monad m => DigitSet -> S.Stream m (Int, DigitSet) -> m HiddenSingleton
+searchHiddenSingleton :: DigitSet -> S.Stream IO (Int, DigitSet) -> IO HiddenSingleton
 searchHiddenSingleton !mask s = S.foldl step None s
    where
      step Multiple _ = Multiple
-     step a (idx, set)
+     step !a (!idx, !set)
        | (set .&. mask) /= DigitSet 0 = case a of
            None -> OnlyAt idx
            _ -> Multiple

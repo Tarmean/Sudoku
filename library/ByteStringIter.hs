@@ -19,13 +19,13 @@ data ParserState = ParserState !Int !(Ptr Word8) !Int
 -- digitSets :: UN.Vector DigitSet
 -- digitSets = V.iterateN 9 (`shiftL` 1) (DigitSet 1)
 
-{-# INLINE step #-}
+-- {-# INLINE step #-}
 step :: ParserState -> IO (S.Step ParserState (Matrix RealWorld))
-step (ParserState offset ptr len)
+step (ParserState !offset !ptr !len)
     | len - offset < 81 = return S.Done
     | otherwise = do
         vec <- G.replicate 81 (DigitSet ((2^(9::Int))-1), False)
-        let m = Matrix vec
+        let !m = Matrix vec
         let loop !cur
               | cur >= 81 = return ()
               | otherwise = do
@@ -40,5 +40,5 @@ step (ParserState offset ptr len)
 
 {-# INLINE withStreamM #-}
 withStreamM :: ByteString -> (S.Stream IO (Matrix RealWorld) -> IO r) -> IO r
-withStreamM (PS fp off len)  f = withForeignPtr fp $ \p ->
+withStreamM (PS !fp !off !len)  f = withForeignPtr fp $ \p ->
     f (S.Stream step (ParserState off p len))

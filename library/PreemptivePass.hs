@@ -15,7 +15,7 @@ import Shape
 import Trace
 
 {-# INLINE applyPreemptives #-}
-applyPreemptives :: (PrimMonad m) => Matrix  (PrimState m) -> m Bool
+applyPreemptives :: Matrix  (PrimState IO) -> IO Bool
 applyPreemptives = anyRegions . preemptivePass
 
 {-# INLINE preemptivePass #-}

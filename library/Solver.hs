@@ -13,9 +13,9 @@ import PrintMatrix
 import TestSolution
 import Trace
 
-{-# INLINE solve #-}
+
 solve ::  Matrix  (PrimState IO) -> IO Bool
-solve m = debug 's' m >> loopHiddenSingletons
+solve !m = debug 's' m >> loopHiddenSingletons
   where
       loopHiddenSingletons = do
           r <- applyHiddenSingletons m
@@ -38,11 +38,11 @@ solve m = debug 's' m >> loopHiddenSingletons
 
 {-# INLINE doRecursion #-}
 doRecursion :: (m ~ IO) => DigitSet -> Int -> Int -> Matrix  (PrimState m) -> m Bool
-doRecursion oldSet idx curTry m
+doRecursion !oldSet !idx !curTry !m
     | not (mask `isSubsetOf` oldSet) = return False
     | otherwise = do
         vec' <-  G.clone (mCells  m)
         let m' = (Matrix vec')
         fixCell idx mask m'
         solve m'
-    where mask = toDigitSet curTry
+    where !mask = toDigitSet curTry

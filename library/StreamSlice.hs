@@ -31,6 +31,7 @@ toStream :: (PrimMonad m, s ~ PrimState m) => Matrix s -> Range -> S.Stream m (I
 toStream m r = S.map (\(a,b,_) -> (a, b)) . S.filter (\(_,_,b) -> not b) $ toFullStream m r
 
 {-# INLINE toFullStream #-}
+{-# INLINE liftStream #-}
 toFullStream :: forall s m. (PrimMonad m, s ~ PrimState m) =>  Matrix s -> Range ->S.Stream m (Int, DigitSet, Bool)
 toFullStream (Matrix vec) r = S.mapM doRead (liftStream $ rIndices r)
   where
@@ -86,7 +87,7 @@ shortCutFromTo zero end p = loop zero
 minimumSet :: Monad m => S.Stream m (Int, DigitSet) -> m SMinimum
 minimumSet = S.foldl' step SNothing
   where
-    step w@(SJust !_ !_ !aCount) (idx, cur )
+    step !w@(SJust !_ !_ !aCount) (!idx, !cur )
         | curCount < aCount = SJust idx cur curCount
         | otherwise = w
       where curCount = popCount cur

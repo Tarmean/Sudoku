@@ -33,10 +33,11 @@ library:
       # - -ddump-stg
       # - -dsuppress-all
       # - -fforce-recomp
-      - -Odph
+      - -O2
       - -fno-liberate-case
       - -funfolding-use-threshold1000
       - -funfolding-keeness-factor1000
+      - -fforce-recomp
       # - -fllvm
       # - -optlo-O3
   source-dirs: library

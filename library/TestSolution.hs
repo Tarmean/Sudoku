@@ -10,16 +10,16 @@ import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Trace
 
 
-{-# INLINE checkComplete #-}
-checkComplete :: PrimMonad m => Matrix (PrimState m) -> m Bool
+-- {-# INLINE checkComplete #-}
+checkComplete :: Matrix (PrimState IO) -> IO Bool
 checkComplete m = allRegions pass
   where
     pass = fmap check . S.foldl' step (Just (DigitSet 0)) . toFullStream m
     check (Just a) | a == DigitSet ((2^9)-1) = True
     check _ = False
 
-    step Nothing _  = Nothing
-    step (Just acc) (_, set, _)
+    step !Nothing _  = Nothing
+    step (!Just !acc) (_, !set, _)
       | acc .&. set == DigitSet 0 = Just (acc .|. set)
       | otherwise = trace (show acc ++ show set) Nothing
 
@@ -39,7 +39,7 @@ allRegions f = do
 shortCutFromToAll :: (Monad m) => Int -> Int -> (Int -> m Bool) -> m Bool
 shortCutFromToAll zero end p = loop zero
   where
-    loop i
+    loop !i
       | i >= end = return True
       | otherwise = do
         r <- p i

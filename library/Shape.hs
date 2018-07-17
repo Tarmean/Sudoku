@@ -18,7 +18,7 @@ sudokuRows = 9
 fromToStep :: Int -> Int -> Int -> Int -> Range
 fromToStep from to step size = Range (S.Stream f from) size
   where
-    f i
+    f !i
       | i < to = pure $ S.Yield i (i + step)
       | otherwise = pure S.Done
 
@@ -44,12 +44,11 @@ data Corner = UL | UR | LL | LR | Done
 -- writeSquare only does the (non-overlapping) corners.
 -- using writeSquare slows down the program by a whopping 20% for some reason, though
 writeSquare :: Int -> Int -> Range
-writeSquare r c = Range (S.Stream step UL) 3
+writeSquare !r !c = Range (S.Stream step UL) 3
   where
     offset = 27 * r + 3 * c
     calc a b = offset + 9 * a + b
-    {-# INLINE checked #-}
-    checked a b n = 
+    checked !a !b !n = 
      let idx = calc a b
      in if idx < 81 then pure (S.Yield idx n) else pure (S.Skip n)
     step UL = checked 0 0 UR
@@ -60,11 +59,11 @@ writeSquare r c = Range (S.Stream step UL) 3
 
 data SPair = SPair !Int !Int
 square :: Int -> Int -> Range
-square r c = Range (S.Stream step (SPair 0 0)) 9
+square !r !c = Range (S.Stream step (SPair 0 0)) 9
   where
     offset = r * 27 + 3 * c
-    calc a b = offset + a + b * 9
-    step (SPair a b) =
+    calc !a !b = offset + a + b * 9
+    step !(SPair !a !b) =
        if a < 3
        then
          let idx = calc a b
