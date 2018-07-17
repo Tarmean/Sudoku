@@ -15,20 +15,24 @@ import Trace
 
 
 solve ::  Matrix  (PrimState IO) -> IO Bool
-solve !m = debug 's' m >> loopHiddenSingletons
+solve !m = debug 's' m >> loop
   where
-      loopHiddenSingletons = do
-          r <- applyHiddenSingletons m
-          debug 'h' m
-          if r
-          then loopHiddenSingletons
-          else loopPreemptives
-      loopPreemptives = do
-          r <- applyPreemptives m
-          debug 'p' m
-          if r
-          then loopHiddenSingletons
-          else  recurse
+      loop = do
+          a <- applyHiddenSingletons m
+          b <- applyPreemptives m
+          if a || b then loop else recurse
+      -- loopHiddenSingletons = do
+      --     r <- applyHiddenSingletons m
+      --     debug 'h' m
+      --     if r
+      --     then loopHiddenSingletons
+      --     else loopPreemptives
+      -- loopPreemptives = do
+      --     r <- applyPreemptives m
+      --     debug 'p' m
+      --     if r
+      --     then loopHiddenSingletons
+      --     else  recurse
       recurse = do
           firstUnfixed <- minimumSet (toStream m allFields)
           debug 'r' m

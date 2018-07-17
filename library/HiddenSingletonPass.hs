@@ -1,3 +1,4 @@
+{-# Language ScopedTypeVariables #-}
 module HiddenSingletonPass (applyHiddenSingletons) where
 import Control.Monad.Primitive
 import qualified Data.Vector.Fusion.Stream.Monadic as S
@@ -7,36 +8,28 @@ import Types
 import WriteCell
 import StreamSlice
 import Trace
-import Shape
-
-data HiddenSingleton = None | OnlyAt !Int | Multiple
 
 -- {-# INLINE applyHiddenSingletons #-}
 applyHiddenSingletons ::  Matrix (PrimState IO) -> IO Bool
-applyHiddenSingletons !m = anyRegions hiddenSingletonPass
+applyHiddenSingletons !m = anyRegions (hiddenSingletonPass m)
+
+{-# INLINE hiddenSingletonPass #-}
+hiddenSingletonPass :: forall m. (PrimMonad m) => Matrix (PrimState m) -> Range -> m Bool
+hiddenSingletonPass !m !r =  do
+    SPair covered overlap <- S.foldl' step (SPair notFound notFound) (toStream m r)
+    let mask = covered \\ overlap
+        {-# INLINE fixFinds #-}
+        fixFinds !idx !set = case set .&. mask of
+            found ->
+              if found /= notFound
+              then const True <$> fixCell idx found m
+              else return False
+    if mask /= notFound
+    then mapMatrixM fixFinds m r
+    else return False
   where
-
-    {-# INLINE hiddenSingletonPass #-}
-    hiddenSingletonPass r =  shortCutFromTo 1 9 (step r)
-
     {-# INLINE step #-}
-    step !r !i = do
-        let !mask = toDigitSet i 
-        h <- searchHiddenSingleton mask (toStream m r)
-        case h of
-           OnlyAt idx -> do
-               trace ("hidden singleton : " ++ show (get2D idx)) (return ())
-               fixCell idx mask m
-               return True
-           _ -> return False
+    step (SPair covered overlap) (_,i) = SPair (covered .|. i) (overlap .|. (covered .&. i))
+    notFound = DigitSet 0
 
-{-# INLINE searchHiddenSingleton #-}
-searchHiddenSingleton :: DigitSet -> S.Stream IO (Int, DigitSet) -> IO HiddenSingleton
-searchHiddenSingleton !mask s = S.foldl step None s
-   where
-     step Multiple _ = Multiple
-     step !a (!idx, !set)
-       | (set .&. mask) /= DigitSet 0 = case a of
-           None -> OnlyAt idx
-           _ -> Multiple
-       | otherwise = a
+data SPair = SPair !DigitSet !DigitSet

@@ -17,7 +17,7 @@ main = do
           then return (acc + 1)
           else return acc
 
-    n <- withStreamM bs (S.foldlM' step (0::Int)  . S.take 3000)
+    n <- withStreamM bs (S.foldlM' step (0::Int))
 
 
     print n

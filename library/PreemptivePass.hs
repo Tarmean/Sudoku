@@ -14,20 +14,20 @@ import Data.Vector.Fusion.Stream.Monadic (toList)
 import Shape
 import Trace
 
-{-# INLINE applyPreemptives #-}
+-- {-# INLINE applyPreemptives #-}
 applyPreemptives :: Matrix  (PrimState IO) -> IO Bool
-applyPreemptives = anyRegions . preemptivePass
+applyPreemptives !m = anyRegions (preemptivePass m)
 
 {-# INLINE preemptivePass #-}
 preemptivePass :: forall m. (PrimMonad m) => Matrix (PrimState m) -> Range -> m Bool
 -- preemptivePass m r | trace ("Preemptive Pass: " ++ replicate 50 '-') False = undefined
-preemptivePass m r = searchPreemptives applySet (toStream m r)
+preemptivePass !m !r = searchPreemptives applySet (toStream m r)
   where
     {-# INLINE applySet #-}
     applySet :: DigitSet -> m Bool
     applySet !mask = do
         let (Range ra _) = r
-        trace ("preemptives: " ++ show mask ++ " - " ++ show (map get2D $ unId $ toList ra)) (return ())
+        -- trace ("preemptives: " ++ show mask ++ " - " ++ show (map get2D $ unId $ toList ra)) (return ())
         mapMatrixM (applyMask m mask) m r
 
 {-# INLINE searchPreemptives #-}
@@ -42,7 +42,7 @@ searchPreemptives applySet (S.Stream step s0) = loop s0 0 (DigitSet 0)
             S.Skip state' -> loop state' count set
             S.Yield (idx, a) state' -> do
                 let set' = a .|. set
-                trace (replicate (2*count) ' ' ++ show (count+1) ++ "/" ++ show (popCount set') ++ ", " ++ show (get2D idx) ++ ": " ++ show set') (return ())
+                -- trace (replicate (2*count) ' ' ++ show (count+1) ++ "/" ++ show (popCount set') ++ ", " ++ show (get2D idx) ++ ": " ++ show set') (return ())
                 r <- (check state' (count+1) (set'))
                 if r then return True
                 else loop state' count set
@@ -54,4 +54,4 @@ searchPreemptives applySet (S.Stream step s0) = loop s0 0 (DigitSet 0)
         | otherwise = tindent "loop" count' $ loop state' count' set'
         where pCount = popCount set'
 tindent :: String -> Int -> a -> a
-tindent s i = trace (replicate (i * 2) ' ' ++ s )
+tindent s i a = a -- trace (replicate (i * 2) ' ' ++ s )
