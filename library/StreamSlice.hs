@@ -36,6 +36,7 @@ toFullStream (Matrix vec) r = S.mapM doRead (liftStream $ rIndices r)
   where
     doRead i = format i <$> G.read vec i
     format i (set, fixed) = (i, set, fixed)
+{-# INLINE liftStream #-} 
 liftStream :: Monad m => S.Stream Id a -> S.Stream m a
 liftStream (S.Stream step s) = S.Stream (return . unId . step) s
 

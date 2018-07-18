@@ -1,9 +1,10 @@
 {-# Language ScopedTypeVariables #-}
+{-# Language FlexibleContexts #-}
 module PreemptivePass (applyPreemptives) where
 import Control.Monad.Primitive
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Data.Bits
-import GHC.Types ( SPEC(..) )
+-- import GHC.Types ( SPEC(..) )
 
 import Types
 import WriteCell
@@ -15,23 +16,23 @@ import Shape
 import Trace
 
 {-# INLINE applyPreemptives #-}
-applyPreemptives :: (PrimMonad m) => Matrix  (PrimState m) -> m Bool
+applyPreemptives :: (PrimMonad IO) => Matrix  (PrimState IO) -> IO Bool
 applyPreemptives = anyRegions . preemptivePass
 
 {-# INLINE preemptivePass #-}
-preemptivePass :: forall m. (PrimMonad m) => Matrix (PrimState m) -> Range -> m Bool
+preemptivePass :: (PrimMonad IO) => Matrix (PrimState IO) -> Range -> IO Bool
 -- preemptivePass m r | trace ("Preemptive Pass: " ++ replicate 50 '-') False = undefined
 preemptivePass m r = searchPreemptives applySet (toStream m r)
   where
     {-# INLINE applySet #-}
-    applySet :: DigitSet -> m Bool
+    applySet :: DigitSet -> IO Bool
     applySet !mask = do
         let (Range ra _) = r
         trace ("preemptives: " ++ show mask ++ " - " ++ show (map get2D $ unId $ toList ra)) (return ())
         mapMatrixM (applyMask m mask) m r
 
 {-# INLINE searchPreemptives #-}
-searchPreemptives :: Monad m => (DigitSet -> m Bool) -> S.Stream m (Int, DigitSet) -> m Bool
+searchPreemptives :: Monad IO => (DigitSet -> IO Bool) -> S.Stream IO (Int, DigitSet) -> IO Bool
 searchPreemptives applySet (S.Stream step s0) = loop s0 0 (DigitSet 0)
   where
     -- spec const makes this a ton slower

@@ -1,3 +1,4 @@
+{-# Language FlexibleContexts #-}
 module HiddenSingletonPass (applyHiddenSingletons) where
 import Control.Monad.Primitive
 import qualified Data.Vector.Fusion.Stream.Monadic as S
@@ -12,7 +13,7 @@ import Shape
 data HiddenSingleton = None | OnlyAt !Int | Multiple
 
 {-# INLINE applyHiddenSingletons #-}
-applyHiddenSingletons ::  (PrimMonad m) => Matrix (PrimState m) -> m Bool
+applyHiddenSingletons ::  (PrimMonad IO) => Matrix (PrimState IO) -> IO Bool
 applyHiddenSingletons m = anyRegions hiddenSingletonPass
   where
 
@@ -31,7 +32,7 @@ applyHiddenSingletons m = anyRegions hiddenSingletonPass
            _ -> return False
 
 {-# INLINE searchHiddenSingleton #-}
-searchHiddenSingleton :: Monad m => DigitSet -> S.Stream m (Int, DigitSet) -> m HiddenSingleton
+searchHiddenSingleton :: Monad IO => DigitSet -> S.Stream IO (Int, DigitSet) -> IO HiddenSingleton
 searchHiddenSingleton !mask s = S.foldl step None s
    where
      step Multiple _ = Multiple

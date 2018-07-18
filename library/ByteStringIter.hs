@@ -1,8 +1,6 @@
 module ByteStringIter (withStreamM) where
 import qualified Data.Vector.Generic.Mutable as G
 import qualified Data.Vector.Fusion.Stream.Monadic as S
-import qualified Data.Vector.Unboxed as UN
-import qualified Data.Vector.Generic as V
 import Data.ByteString.Internal
 import GHC.Word
 import Foreign.ForeignPtr       (withForeignPtr)
@@ -36,7 +34,9 @@ step (ParserState offset ptr len)
                     _ -> error ("Illegal character " ++ [toEnum$ fromIntegral digit])
                   loop (cur + 1)
         loop 0
-        return (S.Yield (Matrix vec) (ParserState (offset + 83) ptr len))
+        return (S.Yield (Matrix vec) (ParserState (offset + 81 + newLineWidth) ptr len))
+newLineWidth :: Int
+newLineWidth = 1
 
 {-# INLINE withStreamM #-}
 withStreamM :: ByteString -> (S.Stream IO (Matrix RealWorld) -> IO r) -> IO r

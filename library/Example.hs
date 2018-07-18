@@ -17,7 +17,7 @@ main = do
           then return (acc + 1)
           else return acc
 
-    n <- withStreamM bs (S.foldlM' step (0::Int) )
+    n <- withStreamM bs (\s -> solve =<< s S.!! 83)
 
     print n
     return ()

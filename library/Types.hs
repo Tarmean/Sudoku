@@ -38,12 +38,12 @@ data Range
   { rIndices :: (S.Stream Id Int)
   , rLen :: !Int
   }
-data SMinimum = SJust !Int !DigitSet !Int | SNothing
+data SMinimum = SJust !Int !DigitSet !Int | SNothing deriving Show
 newtype DigitSet = DigitSet Word16
   deriving (Bits, Eq, Prim)
 
 toDigitSet :: Int -> DigitSet
-toDigitSet i = DigitSet 1 `shiftL` i
+toDigitSet i = DigitSet 1 `shiftL` (i-1)
 instance Unbox DigitSet
 setFromList :: [Int] -> DigitSet
 setFromList ls = DigitSet (loop [1..9] ls 0)

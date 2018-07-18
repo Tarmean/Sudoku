@@ -4,6 +4,7 @@
 module Shape where
 import Types
 import qualified Data.Vector.Fusion.Stream.Monadic as S
+import Data.Vector.Fusion.Util (unId)
 
 sudokuRows, sudokuCols :: Int
 sudokuCols = 9
@@ -76,6 +77,16 @@ square r c = Range (S.Stream step (SPair 0 0)) 9
          then pure $ S.Skip (SPair 0 (b+1))
          else pure S.Done -- on 3,2 we are done
 
+squareAround :: Int -> Range
+squareAround idx = square rCol cCol
+  where
+    (r, c) = get2D idx
+    rCol = r `div` 3
+    cCol = c `div` 3
+
 get2D :: Int -> (Int, Int)
 get2D i = (row, col)
   where (row, col) = i `divMod` 9
+
+gets :: Range -> String
+gets (Range a _) = show $ map get2D $ unId $ S.toList a
