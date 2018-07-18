@@ -15,6 +15,6 @@ printMatrix m =
          rowString <- formatRow $ getRow i
          putStrLn rowString
   where
-    getRow i = S.map (\(_,d,b) -> (d, b)) $ toFullStream m (row i)
-    formatRow s = S.foldl (\acc (c, b) -> acc . mark b . shows c) id s <*> pure ""
+    getRow i = S.map (\(_,!d, !b) -> (d, b)) $ toFullStream m (row i)
+    formatRow !s = S.foldl (\acc (c, b) -> acc . mark b . shows c) id s <*> pure ""
     mark b = if b then ('|' :) else ('.' :)

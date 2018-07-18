@@ -32,14 +32,14 @@ fixCell i mask m = do
 applyMask :: Matrix (PrimState IO) -> DigitSet -> Int -> DigitSet -> IO Bool
 applyMask m !mask !idx !cur
     |  False = undefined
-    | cur' == cur = tr "=" >> return False
-    | cur `isSubsetOf` mask = tr "SUB" >> return False
+    | cur' == cur =  return False
+    | cur `isSubsetOf` mask = return False
     | isSingleton cur' = do
-        tr "SING"
+        tr "FIXED"
         fixCell idx cur' m
         return True
     | otherwise = do
-        tr "N"
+        tr "NORMAL"
         writeLin m idx (cur', False) 
         return  True
     where

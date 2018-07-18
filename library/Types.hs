@@ -25,7 +25,7 @@ import Data.Coerce
 
 -- class (forall a b. Coercible a b => Coercible (m a) (m b)) => Representational m where
 
-data Matrix s
+newtype Matrix s
     = Matrix
     { mCells ::  U.MVector s (DigitSet, Bool)
     }

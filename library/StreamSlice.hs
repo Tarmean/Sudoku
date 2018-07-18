@@ -76,7 +76,7 @@ shortCutFromTo :: (Monad m) => Int -> Int -> (Int -> m Bool) -> m Bool
 shortCutFromTo zero end p = loop zero
   where
     loop i
-      | i >= end = return False
+      | i > end = return False
       | otherwise = do
         r <- p i
         if r
@@ -87,7 +87,7 @@ shortCutFromTo zero end p = loop zero
 minimumSet :: Monad m => S.Stream m (Int, DigitSet) -> m SMinimum
 minimumSet = S.foldl' step SNothing
   where
-    step w@(SJust !_ !_ !aCount) (idx, cur )
+    step !w@(SJust !_ !_ !aCount) (!idx, !cur )
         | curCount < aCount = SJust idx cur curCount
         | otherwise = w
       where curCount = popCount cur
