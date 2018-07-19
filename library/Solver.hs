@@ -9,21 +9,18 @@ import Shape
 import WriteCell
 import StreamSlice
 import TestSolution
-import Trace
 
 
 solve ::  Matrix  -> IO Bool
-solve !m = debug '0' m >> loopHiddenSingletons
+solve !m = loopHiddenSingletons
   where
       loopHiddenSingletons = do
           r <- applyHiddenSingletons m
-          debug 's' m
           if r
           then loopHiddenSingletons
           else loopPreemptives
       loopPreemptives = do
           r <- applyPreemptives m
-          debug 'p' m
           if r
           then loopHiddenSingletons
           else  recurse
@@ -42,13 +39,7 @@ doRecursion !oldSet !idx !curTry !m
     | otherwise = do
         vec' <-  G.clone (mCells  m)
         let m' = (Matrix vec')
-        -- putStrLn ">>>>>>>RECURSION"
-        -- changeIndent 1 
         fixCell idx mask m'
-        -- debug 'r' m'
-        r <- solve m'
-        -- changeIndent (-1) 
-        -- putStrLn "<<<<<<<RECURSION"
-        return r
+        solve m'
 
     where !mask = toDigitSet curTry

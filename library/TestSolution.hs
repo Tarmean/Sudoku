@@ -6,7 +6,6 @@ import Types
 import Shape
 import StreamSlice
 import qualified Data.Vector.Fusion.Stream.Monadic as S
-import Trace
 
 
 {-# INLINE checkComplete #-}
@@ -21,7 +20,7 @@ checkComplete m = allRegions pass
     step Nothing _  = Nothing
     step (Just acc) (_, set, _)
       | acc .&. set == DigitSet 0 = Just (acc .|. set)
-      | otherwise = trace ("Check failure :" ++ show acc ++ show set) Nothing
+      | otherwise = Nothing
 
 {-# INLINE allRegions #-}
 allRegions :: (Range -> IO Bool) -> IO Bool

@@ -9,9 +9,6 @@ import Types
 import WriteCell
 import StreamSlice
 
-import Data.Vector.Fusion.Util (unId)
-import Data.Vector.Fusion.Stream.Monadic (toList)
-import Trace
 
 -- {-# INLINE applyPreemptives #-}
 applyPreemptives :: Matrix  -> IO Bool
@@ -19,15 +16,8 @@ applyPreemptives !m = anyRegions (preemptivePass m)
 
 {-# INLINE preemptivePass #-}
 preemptivePass :: Matrix -> Range -> IO Bool
--- preemptivePass m r | trace ("Preemptive Pass: " ++ replicate 50 '-') False = undefined
 preemptivePass !m !r = searchPreemptives applySet (toStream m r)
-  where
-    {-# INLINE applySet #-}
-    applySet :: DigitSet -> IO Bool
-    applySet !mask = do
-        let (Range ra) = r
-        trace ("preemptives: " ++ show mask ++ " - " ++ show (map get2D $ unId $ toList ra)) (return ())
-        mapMatrixM (applyMask m mask) m r
+  where applySet !mask = mapMatrixM (applyMask m mask) m r
 
 {-# INLINE searchPreemptives #-}
 searchPreemptives :: (DigitSet -> IO Bool) -> S.Stream IO (Int, DigitSet) -> IO Bool
@@ -41,7 +31,6 @@ searchPreemptives applySet (S.Stream step s0) = loop s0 0 (DigitSet 0)
             S.Skip state' -> loop state' count set
             S.Yield (_, a) state' -> do
                 let set' = a .|. set
-                -- trace (replicate (2*count) ' ' ++ show (count+1) ++ "/" ++ show (popCount set') ++ ", " ++ show (get2D idx) ++ ": " ++ show set') (return ())
                 r <- (check state' (count+1) (set'))
                 if r then return True
                 else loop state' count set

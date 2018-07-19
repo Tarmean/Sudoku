@@ -4,7 +4,6 @@ import Shape
 import Types
 import Data.Bits
 import StreamSlice
-import Trace
 
 {-# INLINE fixCell #-}
 fixCell :: Int -> DigitSet -> Matrix  -> IO ()
@@ -17,14 +16,12 @@ fixCell i mask m = do
         (r, c) = i `divMod` 9
         sRow = (r `div` 3)
         sCol = (c `div` 3)
-    trace ("Fixed : " ++ show (r,c) ++ " to " ++ show mask) (return ())
 
 
-    changeIndent 1 
     _ <- apply (row r)
     _ <- apply (col c)
     _ <- apply (square sRow sCol)
-    changeIndent (-1) 
+    return ()
 
 {-# INLINE applyMask #-}
 applyMask :: Matrix  -> DigitSet -> Int -> DigitSet -> IO Bool
@@ -33,17 +30,12 @@ applyMask m !mask !idx !cur
     | cur' == cur =  return False
     | cur `isSubsetOf` mask = return False
     | isSingleton cur' = do
-        tr "FIXED"
         fixCell idx cur' m
         return True
     | otherwise = do
-        tr "NORMAL"
         writeLin m idx (cur', False) 
         return  True
-    where
-        cur' = cur \\ mask
-        (r, c) = idx `divMod` 9
-        tr s = traceIO (show (r, c) ++ s ++" mask=" ++ show mask ++ ": " ++ show cur ++ "=>" ++ show cur')
+    where cur' = cur \\ mask
 
 {-# INLINE (\\) #-}
 {-# INLINE isSubsetOf #-}

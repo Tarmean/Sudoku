@@ -4,7 +4,6 @@
 module Shape where
 import Types
 import qualified Data.Vector.Fusion.Stream.Monadic as S
-import Data.Vector.Fusion.Util (unId)
 
 sudokuRows, sudokuCols :: Int
 sudokuCols = 9

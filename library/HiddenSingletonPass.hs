@@ -6,7 +6,6 @@ import Data.Bits
 import Types
 import WriteCell
 import StreamSlice
-import Trace
 
 -- {-# INLINE applyHiddenSingletons #-}
 applyHiddenSingletons ::  Matrix -> IO Bool
@@ -24,10 +23,8 @@ hiddenSingletonPass !m !r =  do
               else return False
     if mask /= notFound
     then do
-        traceIO ("hiddenSingleton : " ++ show r ++ " FOUND : " ++ show mask)
         mapMatrixM fixFinds m r
     else do
-        traceIO ("hiddenSingleton : " ++ show r ++ "NOT FOUND")
         return False
   where notFound = DigitSet 0
 getSingletons :: S.Stream IO (DigitSet) -> IO DigitSet
