@@ -1,283 +1,404 @@
-	Mon Jul 16 23:26 2018 Time and Allocation Profiling Report  (Final)
+	Thu Jul 19 15:08 2018 Time and Allocation Profiling Report  (Final)
 
 	   Sudoku.exe +RTS -p -RTS
 
-	total time  =        8.70 secs   (8697 ticks @ 1000 us, 1 processor)
-	total alloc = 10,258,959,800 bytes  (excludes profiling overheads)
+	total time  =       90.53 secs   (90525 ticks @ 1000 us, 1 processor)
+	total alloc = 91,010,242,800 bytes  (excludes profiling overheads)
 
-COST CENTRE     MODULE                        SRC                                            %time %alloc
+COST CENTRE           MODULE                        SRC                                            %time %alloc
 
-main            Example                       library\Example.hs:(10,1)-(24,13)               39.2   25.1
-primitive       Control.Monad.Primitive       Control\Monad\Primitive.hs:94:3-16              20.6   16.9
-basicUnsafeRead Data.Vector.Unboxed.Base      internal\unbox-tuple-instances:(38,3)-(42,23)   12.6   20.3
-liftStream      StreamSlice                   library\StreamSlice.hs:44:1-64                   7.5   11.8
-basicUnsafeRead Data.Vector.Primitive.Mutable Data\Vector\Primitive\Mutable.hs:112:3-63        5.6   13.0
-tindent         PreemptivePass                library\PreemptivePass.hs:57:1-49                4.7    3.1
-basicUnsafeRead Data.Vector.Unboxed.Base      Data\Vector\Unboxed\Base.hs:326:3-70             3.7    0.0
-basicUnsafeRead Types                         library\Types.hs:94:5-61                         1.1    0.0
-readByteArray#  Data.Primitive.Types          Data\Primitive\Types.hs:163:306-440              0.9    3.7
-readByteArray#  Data.Primitive.Types          Data\Primitive\Types.hs:166:311-447              0.9    3.7
+primitive             Control.Monad.Primitive       Control\Monad\Primitive.hs:94:3-16              24.8   21.6
+applyPreemptives      PreemptivePass                library\PreemptivePass.hs:18:1-51               13.1   11.6
+applyHiddenSingletons HiddenSingletonPass           library\HiddenSingletonPass.hs:13:1-61          11.9    9.2
+getSingletons         HiddenSingletonPass           library\HiddenSingletonPass.hs:(34,1)-(40,25)   10.1   13.5
+basicUnsafeRead       Data.Vector.Unboxed.Base      internal\unbox-tuple-instances:(38,3)-(42,23)    6.9    0.0
+basicUnsafeRead       Data.Vector.Primitive.Mutable Data\Vector\Primitive\Mutable.hs:112:3-63        6.2   16.0
+basicUnsafeRead       Data.Vector.Unboxed.Base      Data\Vector\Unboxed\Base.hs:326:3-70             3.8    0.0
+step.loop             ByteStringIter                library\ByteStringIter.hs:(26,13)-(34,32)        3.2    2.7
+solve.recurse.\       Solver                        library\Solver.hs:34:60-82                       2.8    2.1
+squareStep.step       Shape                         library\Shape.hs:(67,5)-(77,25)                  2.5    4.8
+solve.recurse         Solver                        library\Solver.hs:(30,7)-(36,41)                 2.1    2.5
+.|.                   Types                         library\Types.hs:47:13-16                        1.9    2.0
+.&.                   Types                         library\Types.hs:47:13-16                        1.5    1.5
+basicUnsafeRead       Types                         library\Types.hs:93:5-61                         1.5    0.0
+readByteArray#        Data.Primitive.Types          Data\Primitive\Types.hs:166:311-447              1.2    4.6
+readByteArray#        Data.Primitive.Types          Data\Primitive\Types.hs:163:306-440              1.0    4.6
 
 
-                                                                                                                                           individual      inherited
-COST CENTRE                    MODULE                            SRC                                                   no.      entries  %time %alloc   %time %alloc
+                                                                                                                                       individual      inherited
+COST CENTRE                    MODULE                           SRC                                                no.      entries  %time %alloc   %time %alloc
 
-MAIN                           MAIN                              <built-in>                                             947          0    0.0    0.0   100.0  100.0
- CAF                           GHC.IO.Encoding.CodePage          <entire-module>                                       1881          0    0.0    0.0     0.0    0.0
- CAF                           GHC.IO.Encoding                   <entire-module>                                       1876          0    0.0    0.0     0.0    0.0
- CAF                           GHC.IO.Handle.Text                <entire-module>                                       1861          0    0.0    0.0     0.0    0.0
- CAF                           GHC.IO.Handle.FD                  <entire-module>                                       1859          0    0.0    0.0     0.0    0.0
- CAF                           GHC.IO.FD                         <entire-module>                                       1857          0    0.0    0.0     0.0    0.0
- CAF:$fApplicativeId4          Data.Vector.Fusion.Util           <no location info>                                    1200          0    0.0    0.0     0.0    0.0
-  pure                         Data.Vector.Fusion.Util           Data\Vector\Fusion\Util.hs:31:3-11                    1978          1    0.0    0.0     0.0    0.0
- CAF:$fBitsDigitSet1           Types                             <no location info>                                    1134          0    0.0    0.0     0.0    0.0
-  popCount                     Types                             library\Types.hs:48:13-16                             2016          1    0.0    0.0     0.0    0.0
- CAF:$fBitsDigitSet19          Types                             <no location info>                                    1116          0    0.0    0.0     0.0    0.0
-  complement                   Types                             library\Types.hs:48:13-16                             2014          1    0.0    0.0     0.0    0.0
- CAF:$fBitsDigitSet21          Types                             <no location info>                                    1114          0    0.0    0.0     0.0    0.0
-  .|.                          Types                             library\Types.hs:48:13-16                             2010          1    0.0    0.0     0.0    0.0
- CAF:$fBitsDigitSet22          Types                             <no location info>                                    1113          0    0.0    0.0     0.0    0.0
-  .&.                          Types                             library\Types.hs:48:13-16                             2012          1    0.0    0.0     0.0    0.0
- CAF:$fBitsDigitSet7           Types                             <no location info>                                    1128          0    0.0    0.0     0.0    0.0
-  shiftL                       Types                             library\Types.hs:48:13-16                             1987          1    0.0    0.0     0.0    0.0
- CAF:$fEqDigitSet1             Types                             <no location info>                                    1108          0    0.0    0.0     0.0    0.0
-  /=                           Types                             library\Types.hs:48:19-20                             2026          1    0.0    0.0     0.0    0.0
- CAF:$fEqDigitSet2             Types                             <no location info>                                    1109          0    0.0    0.0     0.0    0.0
-  ==                           Types                             library\Types.hs:48:19-20                             2008          1    0.0    0.0     0.0    0.0
- CAF:$fMVectorMVectorDigitSet1 Types                             <no location info>                                    1072          0    0.0    0.0     0.0    0.0
-  sizeOf#                      Types                             library\Types.hs:48:23-26                             1910          1    0.0    0.0     0.0    0.0
- CAF:$fMVectorMVectorDigitSet3 Types                             <no location info>                                    1059          0    0.0    0.0     0.0    0.0
-  setByteArray#                Types                             library\Types.hs:48:23-26                             1918          1    0.0    0.0     0.0    0.0
- CAF:$fMVectorMVectorDigitSet4 Types                             <no location info>                                    1060          0    0.0    0.0     0.0    0.0
-  writeByteArray#              Types                             library\Types.hs:48:23-26                             1958          1    0.0    0.0     0.0    0.0
- CAF:$fMVectorMVectorDigitSet5 Types                             <no location info>                                    1061          0    0.0    0.0     0.0    0.0
-  readByteArray#               Types                             library\Types.hs:48:23-26                             1948          1    0.0    0.0     0.0    0.0
- CAF:$fMonadId1                Data.Vector.Fusion.Util           <no location info>                                    1202          0    0.0    0.0     0.0    0.0
-  return                       Data.Vector.Fusion.Util           Data\Vector\Fusion\Util.hs:35:3-15                    1977          1    0.0    0.0     0.0    0.0
- CAF:$fPrimDigitSet5           Types                             <no location info>                                    1062          0    0.0    0.0     0.0    0.0
-  indexByteArray#              Types                             library\Types.hs:48:23-26                             1997          1    0.0    0.0     0.0    0.0
- CAF:$fPrimMonadIO1_r3Ot       Control.Monad.Primitive           <no location info>                                    1790          0    0.0    0.0     0.0    0.0
-  primitive                    Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2018          1    0.0    0.0     0.0    0.0
- CAF:$fPrimMonadST1_r3Ox       Control.Monad.Primitive           <no location info>                                    1791          0    0.0    0.0     0.0    0.0
-  primitive                    Control.Monad.Primitive           Control\Monad\Primitive.hs:178:3-16                   1984          1    0.0    0.0     0.0    0.0
- CAF:digitSets                 ByteStringIter                    library\ByteStringIter.hs:20:1-9                      1173          0    0.0    0.0     0.0    0.0
-  digitSets                    ByteStringIter                    library\ByteStringIter.hs:20:1-50                     1961          1    0.0    0.0     0.0    0.0
-   >>=                         Data.Vector.Fusion.Util           Data\Vector\Fusion\Util.hs:36:3-18                    1976         18    0.0    0.0     0.0    0.0
-    fmap                       Data.Vector.Fusion.Stream.Monadic Data\Vector\Fusion\Stream\Monadic.hs:(133,3)-(135,20) 1979         10    0.0    0.0     0.0    0.0
-     basicUnsafeWrite          Types                             library\Types.hs:95:5-67                              1980          9    0.0    0.0     0.0    0.0
-      basicUnsafeWrite         Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:115:3-69             1981          9    0.0    0.0     0.0    0.0
-       primitive               Control.Monad.Primitive           Control\Monad\Primitive.hs:178:3-16                   1985          0    0.0    0.0     0.0    0.0
-        writeByteArray#        Data.Primitive.Types              Data\Primitive\Types.hs:166:452-523                   1986          9    0.0    0.0     0.0    0.0
-   basicUnsafeSlice            Types                             library\Types.hs:89:5-81                              1982         10    0.0    0.0     0.0    0.0
-    basicUnsafeSlice           Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(85,3)-(86,25)       1983         10    0.0    0.0     0.0    0.0
-   unId                        Data.Vector.Fusion.Util           Data\Vector\Fusion\Util.hs:25:21-24                   1975         10    0.0    0.0     0.0    0.0
-   basicUnsafeFreeze           Types                             library\Types.hs:108:5-80                             1990          1    0.0    0.0     0.0    0.0
-    basicUnsafeFreeze          Data.Vector.Primitive             Data\Vector\Primitive.hs:(208,3)-(209,51)             1991          1    0.0    0.0     0.0    0.0
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:178:3-16                   1992          1    0.0    0.0     0.0    0.0
-   basicUnsafeNew              Types                             library\Types.hs:91:5-61                              1965          1    0.0    0.0     0.0    0.0
-    basicUnsafeNew             Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      1966          1    0.0    0.0     0.0    0.0
-     basicUnsafeNew.mx         Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:102:7-37             1967          1    0.0    0.0     0.0    0.0
-     basicUnsafeNew.size       Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:101:7-36             1968          1    0.0    0.0     0.0    0.0
-      sizeOf                   Data.Primitive.Types              Data\Primitive\Types.hs:114:1-25                      1969          1    0.0    0.0     0.0    0.0
-       sizeOf#                 Types                             library\Types.hs:48:23-26                             1970          0    0.0    0.0     0.0    0.0
-        sizeOf#                Data.Primitive.Types              Data\Primitive\Types.hs:166:71-101                    1971          1    0.0    0.0     0.0    0.0
-         unI#                  Data.Primitive.Types              Data\Primitive\Types.hs:158:1-17                      1972          1    0.0    0.0     0.0    0.0
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:178:3-16                   1973          1    0.0    0.0     0.0    0.0
-   sChunks                     Data.Vector.Fusion.Bundle.Monadic Data\Vector\Fusion\Bundle\Monadic.hs:122:30-36        1974          1    0.0    0.0     0.0    0.0
-   sSize                       Data.Vector.Fusion.Bundle.Monadic Data\Vector\Fusion\Bundle\Monadic.hs:124:30-34        1963          1    0.0    0.0     0.0    0.0
-   upperBound                  Data.Vector.Fusion.Bundle.Size    Data\Vector\Fusion\Bundle\Size.hs:(118,1)-(120,30)    1962          1    0.0    0.0     0.0    0.0
-   shiftL                      Types                             library\Types.hs:48:13-16                             1988          0    0.0    0.0     0.0    0.0
- CAF:doBoundsChecks            Data.Vector.Internal.Check        Data\Vector\Internal\Check.hs:55:1-14                 1191          0    0.0    0.0     0.0    0.0
-  doBoundsChecks               Data.Vector.Internal.Check        Data\Vector\Internal\Check.hs:55:1-21                 1941          1    0.0    0.0     0.0    0.0
- CAF:doInternalChecks          Data.Vector.Internal.Check        Data\Vector\Internal\Check.hs:71:1-16                 1193          0    0.0    0.0     0.0    0.0
-  doInternalChecks             Data.Vector.Internal.Check        Data\Vector\Internal\Check.hs:71:1-24                 1964          1    0.0    0.0     0.0    0.0
- CAF:doUnsafeChecks            Data.Vector.Internal.Check        Data\Vector\Internal\Check.hs:64:1-14                 1192          0    0.0    0.0     0.0    0.0
-  doUnsafeChecks               Data.Vector.Internal.Check        Data\Vector\Internal\Check.hs:64:1-22                 1943          1    0.0    0.0     0.0    0.0
- CAF:ds3_r21Yc                 Solver                            <no location info>                                    1042          0    0.0    0.0     0.0    0.0
-  rIndices                     Types                             library\Types.hs:43:5-12                              2062          1    0.0    0.0     0.0    0.0
- CAF:ds3_r2Y29                 Example                           <no location info>                                    1003          0    0.0    0.0     0.0    0.0
-  main                         Example                           library\Example.hs:(10,1)-(24,13)                     1920          0    0.0    0.0     0.0    0.0
- CAF:fp_r2Y1g                  Example                           <no location info>                                     982          0    0.0    0.0     0.0    0.0
- CAF:lvl17_r21Xe               Solver                            <no location info>                                    1023          0    0.0    0.0     0.0    0.0
-  tindent                      PreemptivePass                    library\PreemptivePass.hs:57:1-49                     2028          1    0.0    0.0     0.0    0.0
-   trace                       Trace                             library\Trace.hs:3:1-13                               2029          1    0.0    0.0     0.0    0.0
- CAF:lvl22_r21Xt               Solver                            <no location info>                                    1029          0    0.0    0.0     0.0    0.0
-  basicUnsafeCopy              Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(59,3)-(62,35)         2104          0    0.0    0.0     0.0    0.0
-   basicUnsafeCopy             Types                             library\Types.hs:98:5-79                              2105          0    0.0    0.0     0.0    0.0
-    basicUnsafeCopy            Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(118,3)-(121,34)     2106          0    0.0    0.0     0.0    0.0
-     basicUnsafeCopy.sz        Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:121:7-34             2107          0    0.0    0.0     0.0    0.0
-      sizeOf                   Data.Primitive.Types              Data\Primitive\Types.hs:114:1-25                      2108          1    0.0    0.0     0.0    0.0
-       sizeOf#                 Types                             library\Types.hs:48:23-26                             2109          0    0.0    0.0     0.0    0.0
-        sizeOf#                Data.Primitive.Types              Data\Primitive\Types.hs:166:71-101                    2110          1    0.0    0.0     0.0    0.0
-         unI#                  Data.Primitive.Types              Data\Primitive\Types.hs:158:1-17                      2111          1    0.0    0.0     0.0    0.0
- CAF:lvl34_r21XT               Solver                            <no location info>                                    1035          0    0.0    0.0     0.0    0.0
-  basicUnsafeNew               Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(21,3)-(25,32)         2086          0    0.0    0.0     0.0    0.0
-   basicUnsafeNew              Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:323:3-55                  2087          0    0.0    0.0     0.0    0.0
-    basicUnsafeNew             Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      2088          0    0.0    0.0     0.0    0.0
-     basicUnsafeNew.mx         Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:102:7-37             2089          0    0.0    0.0     0.0    0.0
- CAF:lvl35_r21Y3               Solver                            <no location info>                                    1038          0    0.0    0.0     0.0    0.0
-  basicUnsafeNew               Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(21,3)-(25,32)         2070          0    0.0    0.0     0.0    0.0
-   basicUnsafeNew              Types                             library\Types.hs:91:5-61                              2071          0    0.0    0.0     0.0    0.0
-    basicUnsafeNew             Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      2072          0    0.0    0.0     0.0    0.0
-     basicUnsafeNew.mx         Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:102:7-37             2073          0    0.0    0.0     0.0    0.0
- CAF:lvl45_r21Yj               Solver                            <no location info>                                    1045          0    0.0    0.0     0.0    0.0
- CAF:lvl9_r2Y1E                Example                           <no location info>                                     991          0    0.0    0.0     0.0    0.0
-  main                         Example                           library\Example.hs:(10,1)-(24,13)                     1903          0    0.0    0.0     0.0    0.0
-   basicUnsafeReplicate        Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(32,3)-(36,32)         1904          0    0.0    0.0     0.0    0.0
-    basicUnsafeReplicate       Types                             library\Types.hs:93:5-77                              1905          0    0.0    0.0     0.0    0.0
-     basicUnsafeReplicate      Data.Vector.Generic.Mutable.Base  Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16)    1906          0    0.0    0.0     0.0    0.0
-      basicUnsafeNew           Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      1907          0    0.0    0.0     0.0    0.0
-       basicUnsafeNew.size     Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:101:7-36             1908          0    0.0    0.0     0.0    0.0
-        sizeOf                 Data.Primitive.Types              Data\Primitive\Types.hs:114:1-25                      1909          1    0.0    0.0     0.0    0.0
-         sizeOf#               Types                             library\Types.hs:48:23-26                             1911          0    0.0    0.0     0.0    0.0
-          sizeOf#              Data.Primitive.Types              Data\Primitive\Types.hs:166:71-101                    1912          1    0.0    0.0     0.0    0.0
-           unI#                Data.Primitive.Types              Data\Primitive\Types.hs:158:1-17                      1913          1    0.0    0.0     0.0    0.0
- CAF:main1                     Example                           <no location info>                                    1005          0    0.0    0.0     0.0    0.0
-  main                         Example                           library\Example.hs:(10,1)-(24,13)                     1895          1    0.0    0.0     0.0    0.0
- CAF:main1                     Main                              <no location info>                                     954          0    0.0    0.0     0.0    0.0
-  main                         Main                              executable\Main.hs:7:1-19                             1894          1    0.0    0.0     0.0    0.0
- CAF:sIZEOF_WORD16             Data.Primitive.MachDeps           Data\Primitive\MachDeps.hs:101:1-13                   1814          0    0.0    0.0     0.0    0.0
-  sIZEOF_WORD16                Data.Primitive.MachDeps           Data\Primitive\MachDeps.hs:101:1-17                   1914          1    0.0    0.0     0.0    0.0
- CAF:sIZEOF_WORD8              Data.Primitive.MachDeps           Data\Primitive\MachDeps.hs:95:1-12                    1810          0    0.0    0.0     0.0    0.0
-  sIZEOF_WORD8                 Data.Primitive.MachDeps           Data\Primitive\MachDeps.hs:95:1-16                    1932          1    0.0    0.0     0.0    0.0
- CAF:size3_r21Y2               Solver                            <no location info>                                    1037          0    0.0    0.0     0.0    0.0
-  basicUnsafeNew               Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(21,3)-(25,32)         2074          0    0.0    0.0     0.0    0.0
-   basicUnsafeNew              Types                             library\Types.hs:91:5-61                              2075          0    0.0    0.0     0.0    0.0
-    basicUnsafeNew             Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      2076          0    0.0    0.0     0.0    0.0
-     basicUnsafeNew.size       Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:101:7-36             2077          1    0.0    0.0     0.0    0.0
-      sizeOf                   Data.Primitive.Types              Data\Primitive\Types.hs:114:1-25                      2078          1    0.0    0.0     0.0    0.0
-       sizeOf#                 Types                             library\Types.hs:48:23-26                             2079          0    0.0    0.0     0.0    0.0
-        sizeOf#                Data.Primitive.Types              Data\Primitive\Types.hs:166:71-101                    2080          1    0.0    0.0     0.0    0.0
-         unI#                  Data.Primitive.Types              Data\Primitive\Types.hs:158:1-17                      2081          1    0.0    0.0     0.0    0.0
- CAF:size42_r21XR              Solver                            <no location info>                                    1034          0    0.0    0.0     0.0    0.0
-  basicUnsafeNew               Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(21,3)-(25,32)         2090          0    0.0    0.0     0.0    0.0
-   basicUnsafeNew              Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:323:3-55                  2091          0    0.0    0.0     0.0    0.0
-    basicUnsafeNew             Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      2092          0    0.0    0.0     0.0    0.0
-     basicUnsafeNew.size       Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:101:7-36             2093          1    0.0    0.0     0.0    0.0
-      sizeOf                   Data.Primitive.Types              Data\Primitive\Types.hs:114:1-25                      2094          1    0.0    0.0     0.0    0.0
-       sizeOf#                 Data.Primitive.Types              Data\Primitive\Types.hs:163:70-99                     2095          1    0.0    0.0     0.0    0.0
-        unI#                   Data.Primitive.Types              Data\Primitive\Types.hs:158:1-17                      2096          1    0.0    0.0     0.0    0.0
- CAF:sudokuCols                Shape                             library\Shape.hs:9:1-10                               1007          0    0.0    0.0     0.0    0.0
-  sudokuCols                   Shape                             library\Shape.hs:9:1-14                               2021          1    0.0    0.0     0.0    0.0
- main                          Example                           library\Example.hs:(10,1)-(24,13)                     1896          0   39.2   25.1   100.0  100.0
-  basicUnsafeRead              Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(38,3)-(42,23)         1944   21032431   11.4   18.2    40.0   51.0
-   basicUnsafeRead             Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:326:3-70                  1950   21032431    3.3    0.0    11.1    8.2
-    basicUnsafeRead            Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:112:3-63             1951   21032431    2.3    4.9     7.8    8.2
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    1952   21031899    4.8    0.0     5.5    3.3
-      readByteArray#           Data.Primitive.Types              Data\Primitive\Types.hs:163:306-440                   1953   21032431    0.7    3.3     0.7    3.3
-   basicUnsafeRead             Types                             library\Types.hs:94:5-61                              1945   21032431    1.0    0.0    17.5   24.6
-    basicUnsafeRead            Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:112:3-63             1946   21032431    2.6    6.6    16.4   24.6
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    1947   21031899   13.0   14.8    13.9   18.0
-      readByteArray#           Data.Primitive.Types              Data\Primitive\Types.hs:166:311-447                   1949   21032431    0.8    3.3     0.8    3.3
-  basicLength                  Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:11:3-32                1942    4053916    0.2    0.3     0.2    0.3
-  liftStream                   StreamSlice                       library\StreamSlice.hs:44:1-64                        2005    2286609    6.6   10.6     6.7   10.8
-   unId                        Data.Vector.Fusion.Util           Data\Vector\Fusion\Util.hs:25:21-24                   2007   24039199    0.0    0.0     0.0    0.0
-   rIndices                    Types                             library\Types.hs:43:5-12                              2064          0    0.1    0.2     0.1    0.2
-  rIndices                     Types                             library\Types.hs:43:5-12                              2006    2280904    0.0    0.0     0.0    0.0
-  toDigitSet                   Types                             library\Types.hs:51:1-36                              2024    1944447    0.2    0.0     0.4    0.3
-   shiftL                      Types                             library\Types.hs:48:13-16                             2025          0    0.2    0.3     0.2    0.3
-  tindent                      PreemptivePass                    library\PreemptivePass.hs:57:1-49                     2030     671115    4.7    3.1    11.0   11.2
-   basicUnsafeRead             Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(38,3)-(42,23)         2034    2760765    1.2    2.1     4.9    6.5
-    basicUnsafeRead            Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:326:3-70                  2039    2760765    0.4    0.0     1.5    1.1
-     basicUnsafeRead           Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:112:3-63             2040    2760765    0.3    0.6     1.1    1.1
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2041    2760765    0.6    0.0     0.7    0.4
-       readByteArray#          Data.Primitive.Types              Data\Primitive\Types.hs:163:306-440                   2042    2760765    0.1    0.4     0.1    0.4
-    basicUnsafeRead            Types                             library\Types.hs:94:5-61                              2035    2760765    0.1    0.0     2.2    3.2
-     basicUnsafeRead           Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:112:3-63             2036    2760765    0.3    0.9     2.1    3.2
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2037    2760765    1.8    1.9     1.8    2.4
-       readByteArray#          Data.Primitive.Types              Data\Primitive\Types.hs:166:311-447                   2038    2760765    0.0    0.4     0.0    0.4
-   trace                       Trace                             library\Trace.hs:3:1-13                               2031    1588530    0.0    0.0     0.0    0.0
-   basicLength                 Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:11:3-32                2046    1069753    0.0    0.0     0.0    0.0
-   liftStream                  StreamSlice                       library\StreamSlice.hs:44:1-64                        2032     112879    0.9    1.2     0.9    1.2
-    unId                       Data.Vector.Fusion.Util           Data\Vector\Fusion\Util.hs:25:21-24                   2033    3565049    0.0    0.0     0.0    0.0
-   rIndices                    Types                             library\Types.hs:43:5-12                              2045     112879    0.0    0.0     0.0    0.0
-   mCells                      Types                             library\Types.hs:25:7-12                              2050      53842    0.0    0.0     0.0    0.0
-   basicUnsafeWrite            Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(44,3)-(47,36)         2051      37166    0.0    0.0     0.1    0.1
-    basicUnsafeWrite           Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:327:3-72                  2056      37166    0.0    0.0     0.0    0.0
-     basicUnsafeWrite          Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:115:3-69             2057      37166    0.0    0.0     0.0    0.0
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2058      37166    0.0    0.0     0.0    0.0
-       writeByteArray#         Data.Primitive.Types              Data\Primitive\Types.hs:163:445-514                   2059      37166    0.0    0.0     0.0    0.0
-    basicUnsafeWrite           Types                             library\Types.hs:95:5-67                              2052      37166    0.0    0.0     0.1    0.0
-     basicUnsafeWrite          Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:115:3-69             2053      37166    0.0    0.0     0.1    0.0
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2054      37166    0.1    0.0     0.1    0.0
-       writeByteArray#         Data.Primitive.Types              Data\Primitive\Types.hs:166:452-523                   2055      37166    0.0    0.0     0.0    0.0
-   .&.                         Types                             library\Types.hs:48:13-16                             2048          0    0.1    0.0     0.1    0.0
-   .|.                         Types                             library\Types.hs:48:13-16                             2043          0    0.1    0.2     0.1    0.2
-   ==                          Types                             library\Types.hs:48:19-20                             2047          0    0.1    0.0     0.1    0.0
-   complement                  Types                             library\Types.hs:48:13-16                             2049          0    0.0    0.0     0.0    0.0
-   popCount                    Types                             library\Types.hs:48:13-16                             2044          0    0.1    0.1     0.1    0.1
-  trace                        Trace                             library\Trace.hs:3:1-13                               2004     379065    0.0    0.0     0.0    0.0
-  mCells                       Types                             library\Types.hs:25:7-12                              1940     215616    0.0    0.0     0.0    0.0
-  basicUnsafeWrite             Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(44,3)-(47,36)         1954     159119    0.1    0.0     0.5    0.3
-   basicUnsafeWrite            Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:327:3-72                  2000     159119    0.0    0.0     0.1    0.0
-    basicUnsafeWrite           Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:115:3-69             2001     159119    0.0    0.0     0.1    0.0
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2002     129510    0.1    0.0     0.1    0.0
-      writeByteArray#          Data.Primitive.Types              Data\Primitive\Types.hs:163:445-514                   2003     159119    0.0    0.0     0.0    0.0
-   basicUnsafeWrite            Types                             library\Types.hs:95:5-67                              1955     159119    0.0    0.0     0.3    0.2
-    basicUnsafeWrite           Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:115:3-69             1956     159119    0.0    0.1     0.3    0.2
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    1957     129510    0.3    0.1     0.3    0.1
-      writeByteArray#          Data.Primitive.Types              Data\Primitive\Types.hs:166:452-523                   1959     159119    0.0    0.0     0.0    0.0
-  basicUnsafeCopy              Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(59,3)-(62,35)         2098       5605    0.0    0.0     0.0    0.0
-   basicUnsafeCopy             Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:330:3-69                  2112       5605    0.0    0.0     0.0    0.0
-    basicUnsafeCopy            Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(118,3)-(121,34)     2113       5605    0.0    0.0     0.0    0.0
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2114       5605    0.0    0.0     0.0    0.0
-      unI#                     Data.Primitive.ByteArray          Data\Primitive\ByteArray.hs:181:1-17                  2115      16815    0.0    0.0     0.0    0.0
-      basicUnsafeCopy.sz       Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:121:7-34             2116       5605    0.0    0.0     0.0    0.0
-       sizeOf                  Data.Primitive.Types              Data\Primitive\Types.hs:114:1-25                      2117       5605    0.0    0.0     0.0    0.0
-        sizeOf#                Data.Primitive.Types              Data\Primitive\Types.hs:163:70-99                     2118       5605    0.0    0.0     0.0    0.0
-         unI#                  Data.Primitive.Types              Data\Primitive\Types.hs:158:1-17                      2119       5605    0.0    0.0     0.0    0.0
-   basicUnsafeCopy             Types                             library\Types.hs:98:5-79                              2099       5605    0.0    0.0     0.0    0.0
-    basicUnsafeCopy            Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(118,3)-(121,34)     2100       5605    0.0    0.0     0.0    0.0
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2101       5605    0.0    0.0     0.0    0.0
-      unI#                     Data.Primitive.ByteArray          Data\Primitive\ByteArray.hs:181:1-17                  2102      16815    0.0    0.0     0.0    0.0
-      basicUnsafeCopy.sz       Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:121:7-34             2103       5605    0.0    0.0     0.0    0.0
-  basicUnsafeNew               Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(21,3)-(25,32)         2066       5605    0.0    0.0     0.1    0.0
-   basicUnsafeNew              Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:323:3-55                  2083       5605    0.0    0.0     0.0    0.0
-    basicUnsafeNew             Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      2084       5605    0.0    0.0     0.0    0.0
-     basicUnsafeNew.mx         Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:102:7-37             2085       5605    0.0    0.0     0.0    0.0
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2097       5605    0.0    0.0     0.0    0.0
-   basicUnsafeNew              Types                             library\Types.hs:91:5-61                              2067       5605    0.0    0.0     0.1    0.0
-    basicUnsafeNew             Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      2068       5605    0.1    0.0     0.1    0.0
-     basicUnsafeNew.mx         Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:102:7-37             2069       5605    0.0    0.0     0.0    0.0
-     primitive                 Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    2082       5605    0.0    0.0     0.0    0.0
-  unId                         Data.Vector.Fusion.Util           Data\Vector\Fusion\Util.hs:25:21-24                   1960       3400    0.0    0.0     0.0    0.0
-  basicLength                  Types                             library\Types.hs:110:5-48                             1993       1700    0.0    0.0     0.0    0.0
-   basicLength                 Data.Vector.Primitive             Data\Vector\Primitive.hs:216:3-32                     1994       1700    0.0    0.0     0.0    0.0
-  basicUnsafeIndexM            Types                             library\Types.hs:112:5-64                             1995       1700    0.0    0.0     0.0    0.0
-   basicUnsafeIndexM           Data.Vector.Primitive             Data\Vector\Primitive.hs:222:3-75                     1996       1700    0.0    0.0     0.0    0.0
-    indexByteArray#            Types                             library\Types.hs:48:23-26                             1998          0    0.0    0.0     0.0    0.0
-     indexByteArray#           Data.Primitive.Types              Data\Primitive\Types.hs:166:223-293                   1999       1700    0.0    0.0     0.0    0.0
-  basicUnsafeReplicate         Data.Vector.Unboxed.Base          internal\unbox-tuple-instances:(32,3)-(36,32)         1897        100    0.0    0.0     0.0    0.0
-   basicUnsafeReplicate        Data.Vector.Unboxed.Base          Data\Vector\Unboxed\Base.hs:325:3-82                  1924        100    0.0    0.0     0.0    0.0
-    basicUnsafeReplicate       Data.Vector.Generic.Mutable.Base  Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16)    1925        100    0.0    0.0     0.0    0.0
-     basicSet                  Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:130:3-55             1934        100    0.0    0.0     0.0    0.0
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    1935        100    0.0    0.0     0.0    0.0
-       setByteArray#           Data.Primitive.Types              Data\Primitive\Types.hs:163:521-878                   1936        100    0.0    0.0     0.0    0.0
-        internal               Control.Monad.Primitive           Control\Monad\Primitive.hs:97:3-21                    1937        100    0.0    0.0     0.0    0.0
-        setByteArray#.i        Data.Primitive.Types              Data\Primitive\Types.hs:163:596-619                   1938        100    0.0    0.0     0.0    0.0
-        setByteArray#.n        Data.Primitive.Types              Data\Primitive\Types.hs:163:660-683                   1939        100    0.0    0.0     0.0    0.0
-     basicUnsafeNew            Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      1926        100    0.0    0.0     0.0    0.0
-      basicUnsafeNew.mx        Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:102:7-37             1927        100    0.0    0.0     0.0    0.0
-      basicUnsafeNew.size      Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:101:7-36             1928        100    0.0    0.0     0.0    0.0
-       sizeOf                  Data.Primitive.Types              Data\Primitive\Types.hs:114:1-25                      1929        100    0.0    0.0     0.0    0.0
-        sizeOf#                Data.Primitive.Types              Data\Primitive\Types.hs:163:70-99                     1930        100    0.0    0.0     0.0    0.0
-         unI#                  Data.Primitive.Types              Data\Primitive\Types.hs:158:1-17                      1931        100    0.0    0.0     0.0    0.0
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    1933        100    0.0    0.0     0.0    0.0
-   basicUnsafeReplicate        Types                             library\Types.hs:93:5-77                              1898        100    0.0    0.0     0.0    0.0
-    basicUnsafeReplicate       Data.Vector.Generic.Mutable.Base  Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16)    1899        100    0.0    0.0     0.0    0.0
-     basicSet                  Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:130:3-55             1916        100    0.0    0.0     0.0    0.0
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    1917        100    0.0    0.0     0.0    0.0
-       setByteArray#           Data.Primitive.Types              Data\Primitive\Types.hs:166:530-889                   1919        100    0.0    0.0     0.0    0.0
-        internal               Control.Monad.Primitive           Control\Monad\Primitive.hs:97:3-21                    1921        100    0.0    0.0     0.0    0.0
-        setByteArray#.i        Data.Primitive.Types              Data\Primitive\Types.hs:166:606-629                   1922        100    0.0    0.0     0.0    0.0
-        setByteArray#.n        Data.Primitive.Types              Data\Primitive\Types.hs:166:670-693                   1923        100    0.0    0.0     0.0    0.0
-     basicUnsafeNew            Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)      1900        100    0.0    0.0     0.0    0.0
-      basicUnsafeNew.mx        Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:102:7-37             1901        100    0.0    0.0     0.0    0.0
-      basicUnsafeNew.size      Data.Vector.Primitive.Mutable     Data\Vector\Primitive\Mutable.hs:101:7-36             1902        100    0.0    0.0     0.0    0.0
-      primitive                Control.Monad.Primitive           Control\Monad\Primitive.hs:94:3-16                    1915        100    0.0    0.0     0.0    0.0
-  .&.                          Types                             library\Types.hs:48:13-16                             2013          0    0.9    0.7     0.9    0.7
-  .|.                          Types                             library\Types.hs:48:13-16                             2011          0    0.1    0.1     0.1    0.1
-  /=                           Types                             library\Types.hs:48:19-20                             2027          0    0.5    0.0     0.5    0.0
-  ==                           Types                             library\Types.hs:48:19-20                             2009          0    0.2    0.0     0.2    0.0
-  complement                   Types                             library\Types.hs:48:13-16                             2015          0    0.0    0.1     0.0    0.1
-  popCount                     Types                             library\Types.hs:48:13-16                             2017          0    0.1    0.1     0.1    0.1
+MAIN                           MAIN                             <built-in>                                          897          0    0.0    0.0   100.0  100.0
+ CAF                           GHC.IO.Encoding.CodePage         <entire-module>                                    1781          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.Encoding                  <entire-module>                                    1775          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.TopHandler                   <entire-module>                                    1769          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.Handle.Text               <entire-module>                                    1761          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.Handle.FD                 <entire-module>                                    1759          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.FD                        <entire-module>                                    1757          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.Exception                 <entire-module>                                    1756          0    0.0    0.0     0.0    0.0
+ CAF:$fApplicativeId4          Data.Vector.Fusion.Util          <no location info>                                 1100          0    0.0    0.0     0.0    0.0
+  pure                         Data.Vector.Fusion.Util          Data\Vector\Fusion\Util.hs:31:3-11                 1875          1    0.0    0.0     0.0    0.0
+ CAF:$fBitsDigitSet1           Types                            <no location info>                                  969          0    0.0    0.0     0.0    0.0
+  popCount                     Types                            library\Types.hs:47:13-16                          1894          1    0.0    0.0     0.0    0.0
+ CAF:$fBitsDigitSet19          Types                            <no location info>                                  987          0    0.0    0.0     0.0    0.0
+  complement                   Types                            library\Types.hs:47:13-16                          1890          1    0.0    0.0     0.0    0.0
+ CAF:$fBitsDigitSet21          Types                            <no location info>                                  989          0    0.0    0.0     0.0    0.0
+  .|.                          Types                            library\Types.hs:47:13-16                          1892          1    0.0    0.0     0.0    0.0
+ CAF:$fBitsDigitSet22          Types                            <no location info>                                  990          0    0.0    0.0     0.0    0.0
+  .&.                          Types                            library\Types.hs:47:13-16                          1888          1    0.0    0.0     0.0    0.0
+ CAF:$fBitsDigitSet7           Types                            <no location info>                                  975          0    0.0    0.0     0.0    0.0
+  shiftL                       Types                            library\Types.hs:47:13-16                          1867          1    0.0    0.0     0.0    0.0
+ CAF:$fEqDigitSet1             Types                            <no location info>                                  994          0    0.0    0.0     0.0    0.0
+  /=                           Types                            library\Types.hs:47:19-20                          1935          1    0.0    0.0     0.0    0.0
+ CAF:$fEqDigitSet2             Types                            <no location info>                                  993          0    0.0    0.0     0.0    0.0
+  ==                           Types                            library\Types.hs:47:19-20                          1886          1    0.0    0.0     0.0    0.0
+ CAF:$fMVectorMVectorDigitSet1 Types                            <no location info>                                 1000          0    0.0    0.0     0.0    0.0
+  sizeOf#                      Types                            library\Types.hs:47:23-26                          1815          1    0.0    0.0     0.0    0.0
+ CAF:$fMVectorMVectorDigitSet3 Types                            <no location info>                                 1028          0    0.0    0.0     0.0    0.0
+  setByteArray#                Types                            library\Types.hs:47:23-26                          1823          1    0.0    0.0     0.0    0.0
+ CAF:$fMVectorMVectorDigitSet4 Types                            <no location info>                                 1027          0    0.0    0.0     0.0    0.0
+  writeByteArray#              Types                            library\Types.hs:47:23-26                          1865          1    0.0    0.0     0.0    0.0
+ CAF:$fMVectorMVectorDigitSet5 Types                            <no location info>                                 1026          0    0.0    0.0     0.0    0.0
+  readByteArray#               Types                            library\Types.hs:47:23-26                          1880          1    0.0    0.0     0.0    0.0
+ CAF:allSet1_r1x30             Solver                           <no location info>                                  941          0    0.0    0.0     0.0    0.0
+  solve                        Solver                           library\Solver.hs:(16,1)-(36,41)                   2021          0    0.0    0.0     0.0    0.0
+   solve.recurse               Solver                           library\Solver.hs:(30,7)-(36,41)                   2022          0    0.0    0.0     0.0    0.0
+ CAF:doBoundsChecks            Data.Vector.Internal.Check       Data\Vector\Internal\Check.hs:55:1-14              1091          0    0.0    0.0     0.0    0.0
+  doBoundsChecks               Data.Vector.Internal.Check       Data\Vector\Internal\Check.hs:55:1-21              1857          1    0.0    0.0     0.0    0.0
+ CAF:doUnsafeChecks            Data.Vector.Internal.Check       Data\Vector\Internal\Check.hs:64:1-14              1092          0    0.0    0.0     0.0    0.0
+  doUnsafeChecks               Data.Vector.Internal.Check       Data\Vector\Internal\Check.hs:64:1-22              1860          1    0.0    0.0     0.0    0.0
+ CAF:ds_r1HU0                  ByteStringIter                   <no location info>                                 1044          0    0.0    0.0     0.0    0.0
+  step                         ByteStringIter                   library\ByteStringIter.hs:(21,1)-(36,88)           1825          0    0.0    0.0     0.0    0.0
+ CAF:fp_r21aq                  Example                          <no location info>                                  932          0    0.0    0.0     0.0    0.0
+ CAF:lvl17_r1x3i               Solver                           <no location info>                                  948          0    0.0    0.0     0.0    0.0
+  solve                        Solver                           library\Solver.hs:(16,1)-(36,41)                   2060          0    0.0    0.0     0.0    0.0
+   solve.recurse               Solver                           library\Solver.hs:(30,7)-(36,41)                   2061          0    0.0    0.0     0.0    0.0
+    solve.recurse.\            Solver                           library\Solver.hs:34:60-82                         2062          0    0.0    0.0     0.0    0.0
+     basicUnsafeNew            Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(21,3)-(25,32)      2063          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Types                            library\Types.hs:90:5-61                           2064          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew          Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   2065          0    0.0    0.0     0.0    0.0
+        basicUnsafeNew.mx      Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:102:7-37          2066          0    0.0    0.0     0.0    0.0
+ CAF:lvl21_r1HUE               ByteStringIter                   <no location info>                                 1060          0    0.0    0.0     0.0    0.0
+  step                         ByteStringIter                   library\ByteStringIter.hs:(21,1)-(36,88)           1832          0    0.0    0.0     0.0    0.0
+   basicUnsafeReplicate        Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(32,3)-(36,32)      1833          0    0.0    0.0     0.0    0.0
+    basicUnsafeReplicate       Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:325:3-82               1834          0    0.0    0.0     0.0    0.0
+     basicUnsafeReplicate      Data.Vector.Generic.Mutable.Base Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16) 1835          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   1836          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew.mx       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:102:7-37          1837          1    0.0    0.0     0.0    0.0
+ CAF:lvl23_r1x3C               Solver                           <no location info>                                  952          0    0.0    0.0     0.0    0.0
+  solve                        Solver                           library\Solver.hs:(16,1)-(36,41)                   2082          0    0.0    0.0     0.0    0.0
+   solve.recurse               Solver                           library\Solver.hs:(30,7)-(36,41)                   2083          0    0.0    0.0     0.0    0.0
+    solve.recurse.\            Solver                           library\Solver.hs:34:60-82                         2084          0    0.0    0.0     0.0    0.0
+     basicUnsafeNew            Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(21,3)-(25,32)      2085          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:323:3-55               2086          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew          Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   2087          0    0.0    0.0     0.0    0.0
+        basicUnsafeNew.mx      Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:102:7-37          2088          0    0.0    0.0     0.0    0.0
+ CAF:lvl26_r1HUR               ByteStringIter                   <no location info>                                 1066          0    0.0    0.0     0.0    0.0
+  step                         ByteStringIter                   library\ByteStringIter.hs:(21,1)-(36,88)           1802          0    0.0    0.0     0.0    0.0
+   basicUnsafeReplicate        Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(32,3)-(36,32)      1803          0    0.0    0.0     0.0    0.0
+    basicUnsafeReplicate       Types                            library\Types.hs:92:5-77                           1804          0    0.0    0.0     0.0    0.0
+     basicUnsafeReplicate      Data.Vector.Generic.Mutable.Base Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16) 1805          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   1806          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew.mx       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:102:7-37          1807          1    0.0    0.0     0.0    0.0
+ CAF:lvl32_r1x3T               Solver                           <no location info>                                  957          0    0.0    0.0     0.0    0.0
+  solve                        Solver                           library\Solver.hs:(16,1)-(36,41)                   2106          0    0.0    0.0     0.0    0.0
+   solve.recurse               Solver                           library\Solver.hs:(30,7)-(36,41)                   2107          0    0.0    0.0     0.0    0.0
+    solve.recurse.\            Solver                           library\Solver.hs:34:60-82                         2108          0    0.0    0.0     0.0    0.0
+     basicUnsafeCopy           Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(59,3)-(62,35)      2109          0    0.0    0.0     0.0    0.0
+      basicUnsafeCopy          Types                            library\Types.hs:97:5-79                           2110          0    0.0    0.0     0.0    0.0
+       basicUnsafeCopy         Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(118,3)-(121,34)  2111          0    0.0    0.0     0.0    0.0
+        basicUnsafeCopy.sz     Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:121:7-34          2112          0    0.0    0.0     0.0    0.0
+         sizeOf                Data.Primitive.Types             Data\Primitive\Types.hs:114:1-25                   2113          1    0.0    0.0     0.0    0.0
+          sizeOf#              Types                            library\Types.hs:47:23-26                          2114          0    0.0    0.0     0.0    0.0
+           sizeOf#             Data.Primitive.Types             Data\Primitive\Types.hs:166:71-101                 2115          1    0.0    0.0     0.0    0.0
+            unI#               Data.Primitive.Types             Data\Primitive\Types.hs:158:1-17                   2116          1    0.0    0.0     0.0    0.0
+ CAF:lvl8_r1cIt                HiddenSingletonPass              <no location info>                                 1074          0    0.0    0.0     0.0    0.0
+  applyHiddenSingletons        HiddenSingletonPass              library\HiddenSingletonPass.hs:13:1-61             1915          0    0.0    0.0     0.0    0.0
+   getSingletons               HiddenSingletonPass              library\HiddenSingletonPass.hs:(34,1)-(40,25)      1916          0    0.0    0.0     0.0    0.0
+ CAF:main1                     Example                          <no location info>                                  934          0    0.0    0.0     0.0    0.0
+  main                         Example                          library\Example.hs:(9,1)-(24,13)                   1795          1    0.0    0.0     0.0    0.0
+ CAF:main1                     Main                             <no location info>                                  904          0    0.0    0.0     0.0    0.0
+  main                         Main                             executable\Main.hs:7:1-19                          1794          1    0.0    0.0     0.0    0.0
+ CAF:newLineWidth_r1Fxk        ByteStringIter                   library\ByteStringIter.hs:38:1-12                  1043          0    0.0    0.0     0.0    0.0
+  newLineWidth                 ByteStringIter                   library\ByteStringIter.hs:38:1-16                  2032          1    0.0    0.0     0.0    0.0
+ CAF:notFound1_r1cIs           HiddenSingletonPass              <no location info>                                 1073          0    0.0    0.0     0.0    0.0
+  applyHiddenSingletons        HiddenSingletonPass              library\HiddenSingletonPass.hs:13:1-61             1917          0    0.0    0.0     0.0    0.0
+   getSingletons               HiddenSingletonPass              library\HiddenSingletonPass.hs:(34,1)-(40,25)      1918          0    0.0    0.0     0.0    0.0
+    getSingletons.notFound     HiddenSingletonPass              library\HiddenSingletonPass.hs:40:5-25             1919          1    0.0    0.0     0.0    0.0
+ CAF:sIZEOF_WORD16             Data.Primitive.MachDeps          Data\Primitive\MachDeps.hs:101:1-13                1714          0    0.0    0.0     0.0    0.0
+  sIZEOF_WORD16                Data.Primitive.MachDeps          Data\Primitive\MachDeps.hs:101:1-17                1819          1    0.0    0.0     0.0    0.0
+ CAF:sIZEOF_WORD8              Data.Primitive.MachDeps          Data\Primitive\MachDeps.hs:95:1-12                 1710          0    0.0    0.0     0.0    0.0
+  sIZEOF_WORD8                 Data.Primitive.MachDeps          Data\Primitive\MachDeps.hs:95:1-16                 1847          1    0.0    0.0     0.0    0.0
+ CAF:size3_r1HUN               ByteStringIter                   <no location info>                                 1063          0    0.0    0.0     0.0    0.0
+  step                         ByteStringIter                   library\ByteStringIter.hs:(21,1)-(36,88)           1808          0    0.0    0.0     0.0    0.0
+   basicUnsafeReplicate        Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(32,3)-(36,32)      1809          0    0.0    0.0     0.0    0.0
+    basicUnsafeReplicate       Types                            library\Types.hs:92:5-77                           1810          0    0.0    0.0     0.0    0.0
+     basicUnsafeReplicate      Data.Vector.Generic.Mutable.Base Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16) 1811          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   1812          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew.size     Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:101:7-36          1813          1    0.0    0.0     0.0    0.0
+        sizeOf                 Data.Primitive.Types             Data\Primitive\Types.hs:114:1-25                   1814          1    0.0    0.0     0.0    0.0
+         sizeOf#               Types                            library\Types.hs:47:23-26                          1816          0    0.0    0.0     0.0    0.0
+          sizeOf#              Data.Primitive.Types             Data\Primitive\Types.hs:166:71-101                 1817          1    0.0    0.0     0.0    0.0
+           unI#                Data.Primitive.Types             Data\Primitive\Types.hs:158:1-17                   1818          1    0.0    0.0     0.0    0.0
+ CAF:size3_r1x3g               Solver                           <no location info>                                  947          0    0.0    0.0     0.0    0.0
+  solve                        Solver                           library\Solver.hs:(16,1)-(36,41)                   2067          0    0.0    0.0     0.0    0.0
+   solve.recurse               Solver                           library\Solver.hs:(30,7)-(36,41)                   2068          0    0.0    0.0     0.0    0.0
+    solve.recurse.\            Solver                           library\Solver.hs:34:60-82                         2069          0    0.0    0.0     0.0    0.0
+     basicUnsafeNew            Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(21,3)-(25,32)      2070          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Types                            library\Types.hs:90:5-61                           2071          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew          Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   2072          0    0.0    0.0     0.0    0.0
+        basicUnsafeNew.size    Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:101:7-36          2073          1    0.0    0.0     0.0    0.0
+         sizeOf                Data.Primitive.Types             Data\Primitive\Types.hs:114:1-25                   2074          1    0.0    0.0     0.0    0.0
+          sizeOf#              Types                            library\Types.hs:47:23-26                          2075          0    0.0    0.0     0.0    0.0
+           sizeOf#             Data.Primitive.Types             Data\Primitive\Types.hs:166:71-101                 2076          1    0.0    0.0     0.0    0.0
+            unI#               Data.Primitive.Types             Data\Primitive\Types.hs:158:1-17                   2077          1    0.0    0.0     0.0    0.0
+ CAF:size42_r1HUz              ByteStringIter                   <no location info>                                 1057          0    0.0    0.0     0.0    0.0
+  step                         ByteStringIter                   library\ByteStringIter.hs:(21,1)-(36,88)           1838          0    0.0    0.0     0.0    0.0
+   basicUnsafeReplicate        Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(32,3)-(36,32)      1839          0    0.0    0.0     0.0    0.0
+    basicUnsafeReplicate       Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:325:3-82               1840          0    0.0    0.0     0.0    0.0
+     basicUnsafeReplicate      Data.Vector.Generic.Mutable.Base Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16) 1841          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   1842          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew.size     Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:101:7-36          1843          1    0.0    0.0     0.0    0.0
+        sizeOf                 Data.Primitive.Types             Data\Primitive\Types.hs:114:1-25                   1844          1    0.0    0.0     0.0    0.0
+         sizeOf#               Data.Primitive.Types             Data\Primitive\Types.hs:163:70-99                  1845          1    0.0    0.0     0.0    0.0
+          unI#                 Data.Primitive.Types             Data\Primitive\Types.hs:158:1-17                   1846          1    0.0    0.0     0.0    0.0
+ CAF:size42_r1x3B              Solver                           <no location info>                                  951          0    0.0    0.0     0.0    0.0
+  solve                        Solver                           library\Solver.hs:(16,1)-(36,41)                   2089          0    0.0    0.0     0.0    0.0
+   solve.recurse               Solver                           library\Solver.hs:(30,7)-(36,41)                   2090          0    0.0    0.0     0.0    0.0
+    solve.recurse.\            Solver                           library\Solver.hs:34:60-82                         2091          0    0.0    0.0     0.0    0.0
+     basicUnsafeNew            Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(21,3)-(25,32)      2092          0    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:323:3-55               2093          0    0.0    0.0     0.0    0.0
+       basicUnsafeNew          Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   2094          0    0.0    0.0     0.0    0.0
+        basicUnsafeNew.size    Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:101:7-36          2095          1    0.0    0.0     0.0    0.0
+         sizeOf                Data.Primitive.Types             Data\Primitive\Types.hs:114:1-25                   2096          1    0.0    0.0     0.0    0.0
+          sizeOf#              Data.Primitive.Types             Data\Primitive\Types.hs:163:70-99                  2097          1    0.0    0.0     0.0    0.0
+           unI#                Data.Primitive.Types             Data\Primitive\Types.hs:158:1-17                   2098          1    0.0    0.0     0.0    0.0
+ CAF:sudokuCols                Shape                            library\Shape.hs:10:1-10                           1085          0    0.0    0.0     0.0    0.0
+  sudokuCols                   Shape                            library\Shape.hs:10:1-14                           1898          1    0.0    0.0     0.0    0.0
+ main                          Example                          library\Example.hs:(9,1)-(24,13)                   1796          0    0.0    0.0   100.0  100.0
+  solve                        Solver                           library\Solver.hs:(16,1)-(36,41)                   1910     103361    0.0    0.0    92.7   93.7
+   solve.loopHiddenSingletons  Solver                           library\Solver.hs:(18,7)-(23,30)                   1911     103361    0.2    0.5    92.7   93.7
+    applyHiddenSingletons      HiddenSingletonPass              library\HiddenSingletonPass.hs:13:1-61             1912     833079   11.9    9.2    51.6   52.8
+     unId                      Data.Vector.Fusion.Util          Data\Vector\Fusion\Util.hs:25:21-24                1938   59195198    0.0    0.0     0.0    0.0
+     basicLength               Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:11:3-32             1921   55318247    0.0    0.0     0.0    0.0
+     basicUnsafeRead           Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(38,3)-(42,23)      1939   50273928    1.4    0.0     9.3    8.8
+      basicUnsafeRead          Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:326:3-70               1944   50273928    0.8    0.0     2.9    2.2
+       basicUnsafeRead         Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1945   50273928    0.6    1.3     2.1    2.2
+        primitive              Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1946   50273928    1.2    0.0     1.4    0.9
+         readByteArray#        Data.Primitive.Types             Data\Primitive\Types.hs:163:306-440                1947   50273928    0.2    0.9     0.2    0.9
+      basicUnsafeRead          Types                            library\Types.hs:93:5-61                           1940   50273928    0.4    0.0     5.0    6.6
+       basicUnsafeRead         Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1941   50273928    0.7    1.8     4.6    6.6
+        primitive              Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1942   50273928    3.6    4.0     3.9    4.9
+         readByteArray#        Data.Primitive.Types             Data\Primitive\Types.hs:166:311-447                1943   50273928    0.3    0.9     0.3    0.9
+     rIndices                  Types                            library\Types.hs:37:5-12                           1914   15171801    0.0    0.0     0.0    0.0
+     getSingletons             HiddenSingletonPass              library\HiddenSingletonPass.hs:(34,1)-(40,25)      1913    9585809   10.1   13.5    27.0   32.0
+      unId                     Data.Vector.Fusion.Util          Data\Vector\Fusion\Util.hs:25:21-24                1920   99068990    0.0    0.0     0.0    0.0
+      basicUnsafeRead          Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(38,3)-(42,23)      1922   86272280    2.2    0.0    14.0   15.2
+       basicUnsafeRead         Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:326:3-70               1927   86272280    1.3    0.0     4.5    3.8
+        basicUnsafeRead        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1928   86272280    0.9    2.3     3.1    3.8
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1929   86272280    1.9    0.0     2.2    1.5
+          readByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:163:306-440                1930   86272280    0.3    1.5     0.3    1.5
+       basicUnsafeRead         Types                            library\Types.hs:93:5-61                           1923   86272280    0.5    0.0     7.3   11.4
+        basicUnsafeRead        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1924   86272280    1.0    3.0     6.9   11.4
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1925   86272280    5.5    6.8     5.8    8.3
+          readByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:166:311-447                1926   86272280    0.3    1.5     0.3    1.5
+      .&.                      Types                            library\Types.hs:47:13-16                          1932          0    0.8    0.8     0.8    0.8
+      .|.                      Types                            library\Types.hs:47:13-16                          1931          0    1.1    1.2     1.1    1.2
+      complement               Types                            library\Types.hs:47:13-16                          1937          0    0.2    0.2     0.2    0.2
+      squareStep               Shape                            library\Shape.hs:(63,1)-(77,25)                    1972          0    0.1    0.0     0.9    1.2
+       squareStep.step         Shape                            library\Shape.hs:(67,5)-(77,25)                    1973   19265412    0.6    1.2     0.8    1.2
+        squareStep.step.idx    Shape                            library\Shape.hs:70:14-27                          1974   14449059    0.2    0.0     0.2    0.0
+         squareStep.calc       Shape                            library\Shape.hs:66:5-35                           1975   14449059    0.0    0.0     0.0    0.0
+     basicUnsafeWrite          Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(44,3)-(47,36)      1950    4211240    0.2    0.0     1.0    0.7
+      basicUnsafeWrite         Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:327:3-72               1955    4211240    0.0    0.0     0.3    0.1
+       basicUnsafeWrite        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          1956    4211240    0.1    0.1     0.2    0.1
+        primitive              Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1957    4211240    0.2    0.0     0.2    0.0
+         writeByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:163:445-514                1958    4211240    0.0    0.0     0.0    0.0
+      basicUnsafeWrite         Types                            library\Types.hs:94:5-67                           1951    4211240    0.0    0.0     0.6    0.5
+       basicUnsafeWrite        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          1952    4211240    0.1    0.2     0.5    0.5
+        primitive              Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1953    4211240    0.4    0.3     0.5    0.3
+         writeByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:166:452-523                1954    4211240    0.0    0.0     0.0    0.0
+     mCells                    Types                            library\Types.hs:29:7-12                           1949    4211240    0.0    0.0     0.0    0.0
+     squareStep                Shape                            library\Shape.hs:(63,1)-(77,25)                    1964    3244159    0.3    0.2     1.2    1.4
+      squareStep.step          Shape                            library\Shape.hs:(67,5)-(77,25)                    1965   20011668    0.7    1.2     0.9    1.2
+       squareStep.step.idx     Shape                            library\Shape.hs:70:14-27                          1966   15008751    0.2    0.0     0.2    0.0
+        squareStep.calc        Shape                            library\Shape.hs:66:5-35                           1967   15008751    0.0    0.0     0.0    0.0
+      squareStep.offset        Shape                            library\Shape.hs:65:5-27                           1968    3244159    0.0    0.0     0.0    0.0
+     .&.                       Types                            library\Types.hs:47:13-16                          1948          0    0.3    0.3     0.3    0.3
+     .|.                       Types                            library\Types.hs:47:13-16                          1962          0    0.1    0.1     0.1    0.1
+     /=                        Types                            library\Types.hs:47:19-20                          1936          0    0.2    0.0     0.2    0.0
+     ==                        Types                            library\Types.hs:47:19-20                          1959          0    0.3    0.0     0.3    0.0
+     complement                Types                            library\Types.hs:47:13-16                          1960          0    0.3    0.2     0.3    0.2
+     popCount                  Types                            library\Types.hs:47:13-16                          1963          0    0.1    0.1     0.1    0.1
+    solve.loopPreemptives      Solver                           library\Solver.hs:(24,7)-(29,23)                   1977          0    0.1    0.1    40.8   40.4
+     applyPreemptives          PreemptivePass                   library\PreemptivePass.hs:18:1-51                  1978     163210   13.1   11.6    29.5   29.5
+      unId                     Data.Vector.Fusion.Util          Data\Vector\Fusion\Util.hs:25:21-24                1980  108090971    0.0    0.0     0.0    0.0
+      basicUnsafeRead          Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(38,3)-(42,23)      1982   84822991    2.3    0.0    13.8   14.9
+       basicUnsafeRead         Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:326:3-70               1987   84822991    1.2    0.0     4.2    3.7
+        basicUnsafeRead        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1988   84822991    1.0    2.2     3.0    3.7
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1989   84822991    1.7    0.0     2.0    1.5
+          readByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:163:306-440                1990   84822991    0.3    1.5     0.3    1.5
+       basicUnsafeRead         Types                            library\Types.hs:93:5-61                           1983   84822991    0.4    0.0     7.3   11.2
+        basicUnsafeRead        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1984   84822991    1.0    3.0     6.9   11.2
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1985   84822991    5.6    6.7     5.9    8.2
+          readByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:166:311-447                1986   84822991    0.4    1.5     0.4    1.5
+      basicLength              Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:11:3-32             1981   16659863    0.0    0.0     0.0    0.0
+      rIndices                 Types                            library\Types.hs:37:5-12                           1979    5349812    0.0    0.0     0.0    0.0
+      squareStep               Shape                            library\Shape.hs:(63,1)-(77,25)                    1992    1168461    0.3    0.1     1.4    1.8
+       squareStep.step         Shape                            library\Shape.hs:(67,5)-(77,25)                    1993   30998870    0.8    1.7     1.1    1.7
+        squareStep.step.idx    Shape                            library\Shape.hs:70:14-27                          1994   21612154    0.3    0.0     0.3    0.0
+         squareStep.calc       Shape                            library\Shape.hs:66:5-35                           1995   21612154    0.0    0.0     0.0    0.0
+       squareStep.offset       Shape                            library\Shape.hs:65:5-27                           1996    1168461    0.0    0.0     0.0    0.0
+      basicUnsafeWrite         Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(44,3)-(47,36)      2039     411691    0.0    0.0     0.1    0.1
+       basicUnsafeWrite        Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:327:3-72               2044     411691    0.0    0.0     0.0    0.0
+        basicUnsafeWrite       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          2045     411691    0.0    0.0     0.0    0.0
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2046     411691    0.0    0.0     0.0    0.0
+          writeByteArray#      Data.Primitive.Types             Data\Primitive\Types.hs:163:445-514                2047     411691    0.0    0.0     0.0    0.0
+       basicUnsafeWrite        Types                            library\Types.hs:94:5-67                           2040     411691    0.0    0.0     0.1    0.1
+        basicUnsafeWrite       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          2041     411691    0.0    0.0     0.1    0.1
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2042     411691    0.1    0.0     0.1    0.0
+          writeByteArray#      Data.Primitive.Types             Data\Primitive\Types.hs:166:452-523                2043     411691    0.0    0.0     0.0    0.0
+      mCells                   Types                            library\Types.hs:29:7-12                           2038     411691    0.0    0.0     0.0    0.0
+      .&.                      Types                            library\Types.hs:47:13-16                          2036          0    0.1    0.1     0.1    0.1
+      .|.                      Types                            library\Types.hs:47:13-16                          2033          0    0.5    0.5     0.5    0.5
+      ==                       Types                            library\Types.hs:47:19-20                          2035          0    0.1    0.0     0.1    0.0
+      complement               Types                            library\Types.hs:47:13-16                          2037          0    0.1    0.1     0.1    0.1
+      popCount                 Types                            library\Types.hs:47:13-16                          2034          0    0.3    0.4     0.3    0.4
+     solve.recurse             Solver                           library\Solver.hs:(30,7)-(36,41)                   2000     103360    2.1    2.5    11.2   10.8
+      unId                     Data.Vector.Fusion.Util          Data\Vector\Fusion\Util.hs:25:21-24                2002   15291112    0.0    0.0     0.0    0.0
+      basicUnsafeRead          Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(38,3)-(42,23)      2004   14351085    0.4    0.0     2.3    2.5
+       basicUnsafeRead         Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:326:3-70               2009   14351085    0.2    0.0     0.7    0.6
+        basicUnsafeRead        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          2010   14351085    0.1    0.4     0.5    0.6
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2011   14351085    0.3    0.0     0.4    0.3
+          readByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:163:306-440                2012   14351085    0.1    0.3     0.1    0.3
+       basicUnsafeRead         Types                            library\Types.hs:93:5-61                           2005   14351085    0.1    0.0     1.2    1.9
+        basicUnsafeRead        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          2006   14351085    0.2    0.5     1.1    1.9
+         primitive             Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2007   14351085    0.9    1.1     1.0    1.4
+          readByteArray#       Data.Primitive.Types             Data\Primitive\Types.hs:166:311-447                2008   14351085    0.1    0.3     0.1    0.3
+      rIndices                 Types                            library\Types.hs:37:5-12                           2001     767685    0.0    0.0     0.0    0.0
+      solve.recurse.\          Solver                           library\Solver.hs:34:60-82                         2049     359276    2.8    2.1     6.5    5.5
+       unId                    Data.Vector.Fusion.Util          Data\Vector\Fusion\Util.hs:25:21-24                2135   17738240    0.0    0.0     0.0    0.0
+       basicLength             Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:11:3-32             2057   16107637    0.0    0.0     0.0    0.0
+       basicUnsafeRead         Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(38,3)-(42,23)      2136   14966640    0.4    0.0     2.7    2.6
+        basicUnsafeRead        Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:326:3-70               2141   14966640    0.2    0.0     0.8    0.7
+         basicUnsafeRead       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          2142   14966640    0.2    0.4     0.6    0.7
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2143   14966640    0.3    0.0     0.4    0.3
+           readByteArray#      Data.Primitive.Types             Data\Primitive\Types.hs:163:306-440                2144   14966640    0.1    0.3     0.1    0.3
+        basicUnsafeRead        Types                            library\Types.hs:93:5-61                           2137   14966640    0.1    0.0     1.5    2.0
+         basicUnsafeRead       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          2138   14966640    0.2    0.5     1.4    2.0
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2139   14966640    1.1    1.2     1.2    1.4
+           readByteArray#      Data.Primitive.Types             Data\Primitive\Types.hs:166:311-447                2140   14966640    0.1    0.3     0.1    0.3
+       rIndices                Types                            library\Types.hs:37:5-12                           2134    1662960    0.0    0.0     0.0    0.0
+       mCells                  Types                            library\Types.hs:29:7-12                           2058    1140997    0.0    0.0     0.0    0.0
+       basicUnsafeWrite        Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(44,3)-(47,36)      2125    1096813    0.0    0.0     0.3    0.2
+        basicUnsafeWrite       Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:327:3-72               2130    1096813    0.0    0.0     0.1    0.0
+         basicUnsafeWrite      Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          2131    1096813    0.0    0.0     0.1    0.0
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2132    1096813    0.1    0.0     0.1    0.0
+           writeByteArray#     Data.Primitive.Types             Data\Primitive\Types.hs:163:445-514                2133    1096813    0.0    0.0     0.0    0.0
+        basicUnsafeWrite       Types                            library\Types.hs:94:5-67                           2126    1096813    0.0    0.0     0.2    0.1
+         basicUnsafeWrite      Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          2127    1096813    0.0    0.0     0.2    0.1
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2128    1096813    0.1    0.1     0.1    0.1
+           writeByteArray#     Data.Primitive.Types             Data\Primitive\Types.hs:166:452-523                2129    1096813    0.0    0.0     0.0    0.0
+       squareStep              Shape                            library\Shape.hs:(63,1)-(77,25)                    2151     554320    0.1    0.0     0.3    0.4
+        squareStep.step        Shape                            library\Shape.hs:(67,5)-(77,25)                    2152    6651840    0.2    0.4     0.3    0.4
+         squareStep.step.idx   Shape                            library\Shape.hs:70:14-27                          2153    4988880    0.1    0.0     0.1    0.0
+          squareStep.calc      Shape                            library\Shape.hs:66:5-35                           2154    4988880    0.0    0.0     0.0    0.0
+        squareStep.offset      Shape                            library\Shape.hs:65:5-27                           2155     554320    0.0    0.0     0.0    0.0
+       toDigitSet              Types                            library\Types.hs:50:1-40                           2050     359276    0.0    0.0     0.0    0.0
+        shiftL                 Types                            library\Types.hs:47:13-16                          2051          0    0.0    0.0     0.0    0.0
+       basicUnsafeCopy         Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(59,3)-(62,35)      2100      82360    0.0    0.0     0.1    0.0
+        basicUnsafeCopy        Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:330:3-69               2117      82360    0.0    0.0     0.0    0.0
+         basicUnsafeCopy       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(118,3)-(121,34)  2118      82360    0.0    0.0     0.0    0.0
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2119      82360    0.0    0.0     0.0    0.0
+           unI#                Data.Primitive.ByteArray         Data\Primitive\ByteArray.hs:181:1-17               2120     247080    0.0    0.0     0.0    0.0
+           basicUnsafeCopy.sz  Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:121:7-34          2121      82360    0.0    0.0     0.0    0.0
+            sizeOf             Data.Primitive.Types             Data\Primitive\Types.hs:114:1-25                   2122      82360    0.0    0.0     0.0    0.0
+             sizeOf#           Data.Primitive.Types             Data\Primitive\Types.hs:163:70-99                  2123      82360    0.0    0.0     0.0    0.0
+              unI#             Data.Primitive.Types             Data\Primitive\Types.hs:158:1-17                   2124      82360    0.0    0.0     0.0    0.0
+        basicUnsafeCopy        Types                            library\Types.hs:97:5-79                           2101      82360    0.0    0.0     0.0    0.0
+         basicUnsafeCopy       Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(118,3)-(121,34)  2102      82360    0.0    0.0     0.0    0.0
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2103      82360    0.0    0.0     0.0    0.0
+           unI#                Data.Primitive.ByteArray         Data\Primitive\ByteArray.hs:181:1-17               2104     247080    0.0    0.0     0.0    0.0
+           basicUnsafeCopy.sz  Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:121:7-34          2105      82360    0.0    0.0     0.0    0.0
+       basicUnsafeNew          Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(21,3)-(25,32)      2054      82360    0.0    0.0     0.1    0.1
+        basicUnsafeNew         Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:323:3-55               2079      82360    0.0    0.0     0.0    0.0
+         basicUnsafeNew        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   2080      82360    0.0    0.0     0.0    0.0
+          basicUnsafeNew.mx    Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:102:7-37          2081      82360    0.0    0.0     0.0    0.0
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2099      82360    0.0    0.0     0.0    0.0
+        basicUnsafeNew         Types                            library\Types.hs:90:5-61                           2055      82360    0.0    0.0     0.1    0.0
+         basicUnsafeNew        Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   2056      82360    0.0    0.0     0.1    0.0
+          basicUnsafeNew.mx    Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:102:7-37          2059      82360    0.0    0.0     0.0    0.0
+          primitive            Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 2078      82360    0.0    0.0     0.0    0.0
+       .&.                     Types                            library\Types.hs:47:13-16                          2145          0    0.0    0.0     0.0    0.0
+       .|.                     Types                            library\Types.hs:47:13-16                          2053          0    0.0    0.0     0.0    0.0
+       ==                      Types                            library\Types.hs:47:19-20                          2052          0    0.1    0.0     0.1    0.0
+       complement              Types                            library\Types.hs:47:13-16                          2146          0    0.1    0.0     0.1    0.0
+       popCount                Types                            library\Types.hs:47:13-16                          2147          0    0.0    0.0     0.0    0.0
+      basicLength              Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:11:3-32             2003     103360    0.0    0.0     0.0    0.0
+      squareStep               Shape                            library\Shape.hs:(63,1)-(77,25)                    2023      86171    0.0    0.0     0.1    0.1
+       squareStep.step         Shape                            library\Shape.hs:(67,5)-(77,25)                    2024    1034052    0.0    0.1     0.0    0.1
+        squareStep.step.idx    Shape                            library\Shape.hs:70:14-27                          2025     775539    0.0    0.0     0.0    0.0
+         squareStep.calc       Shape                            library\Shape.hs:66:5-35                           2026     775539    0.0    0.0     0.0    0.0
+       squareStep.offset       Shape                            library\Shape.hs:65:5-27                           2027      86171    0.0    0.0     0.0    0.0
+      .&.                      Types                            library\Types.hs:47:13-16                          2017          0    0.1    0.1     0.1    0.1
+      .|.                      Types                            library\Types.hs:47:13-16                          2018          0    0.1    0.1     0.1    0.1
+      ==                       Types                            library\Types.hs:47:19-20                          2016          0    0.1    0.0     0.1    0.0
+      popCount                 Types                            library\Types.hs:47:13-16                          2048          0    0.0    0.0     0.0    0.0
+   solve.loopPreemptives       Solver                           library\Solver.hs:(24,7)-(29,23)                   1976     103360    0.0    0.0     0.0    0.0
+  step                         ByteStringIter                   library\ByteStringIter.hs:(21,1)-(36,88)           1797      21001    0.0    0.0     7.2    6.3
+   step.loop                   ByteStringIter                   library\ByteStringIter.hs:(26,13)-(34,32)          1856    1722082    3.2    2.7     7.2    6.3
+    basicLength                Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:11:3-32             1858   15935440    0.0    0.0     0.0    0.0
+    unId                       Data.Vector.Fusion.Util          Data\Vector\Fusion\Util.hs:25:21-24                1874   11527936    0.0    0.0     0.0    0.0
+    basicUnsafeRead            Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(38,3)-(42,23)      1876    9726696    0.3    0.0     1.8    1.7
+     basicUnsafeRead           Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:326:3-70               1882    9726696    0.1    0.0     0.5    0.4
+      basicUnsafeRead          Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1883    9726696    0.1    0.3     0.4    0.4
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1884    9726696    0.2    0.0     0.3    0.2
+        readByteArray#         Data.Primitive.Types             Data\Primitive\Types.hs:163:306-440                1885    9726696    0.0    0.2     0.0    0.2
+     basicUnsafeRead           Types                            library\Types.hs:93:5-61                           1877    9726696    0.1    0.0     0.9    1.3
+      basicUnsafeRead          Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:112:3-63          1878    9726696    0.1    0.3     0.9    1.3
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1879    9726696    0.7    0.8     0.7    0.9
+        readByteArray#         Data.Primitive.Types             Data\Primitive\Types.hs:166:311-447                1881    9726696    0.0    0.2     0.0    0.2
+    basicUnsafeWrite           Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(44,3)-(47,36)      1861    6544760    0.2    0.0     1.2    1.1
+     basicUnsafeWrite          Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:327:3-72               1869    6544760    0.0    0.0     0.3    0.2
+      basicUnsafeWrite         Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          1870    6544760    0.1    0.2     0.3    0.2
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1871    6544760    0.2    0.0     0.2    0.0
+        writeByteArray#        Data.Primitive.Types             Data\Primitive\Types.hs:163:445-514                1872    6544760    0.0    0.0     0.0    0.0
+     basicUnsafeWrite          Types                            library\Types.hs:94:5-67                           1862    6544760    0.0    0.0     0.7    0.8
+      basicUnsafeWrite         Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:115:3-69          1863    6544760    0.1    0.3     0.6    0.8
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1864    6544760    0.5    0.5     0.5    0.5
+        writeByteArray#        Data.Primitive.Types             Data\Primitive\Types.hs:166:452-523                1866    6544760    0.0    0.0     0.0    0.0
+    mCells                     Types                            library\Types.hs:29:7-12                           1859    6208744    0.0    0.0     0.0    0.0
+    rIndices                   Types                            library\Types.hs:37:5-12                           1873    1080744    0.0    0.0     0.0    0.0
+    squareStep                 Shape                            library\Shape.hs:(63,1)-(77,25)                    1899     360248    0.1    0.0     0.3    0.3
+     squareStep.step           Shape                            library\Shape.hs:(67,5)-(77,25)                    1900    4322976    0.2    0.3     0.2    0.3
+      squareStep.step.idx      Shape                            library\Shape.hs:70:14-27                          1901    3242232    0.0    0.0     0.0    0.0
+       squareStep.calc         Shape                            library\Shape.hs:66:5-35                           1902    3242232    0.0    0.0     0.0    0.0
+     squareStep.offset         Shape                            library\Shape.hs:65:5-27                           1903     360248    0.0    0.0     0.0    0.0
+    .&.                        Types                            library\Types.hs:47:13-16                          1889          0    0.1    0.1     0.1    0.1
+    .|.                        Types                            library\Types.hs:47:13-16                          1893          0    0.1    0.1     0.1    0.1
+    ==                         Types                            library\Types.hs:47:19-20                          1887          0    0.2    0.0     0.2    0.0
+    complement                 Types                            library\Types.hs:47:13-16                          1891          0    0.2    0.1     0.2    0.1
+    popCount                   Types                            library\Types.hs:47:13-16                          1895          0    0.1    0.1     0.1    0.1
+    shiftL                     Types                            library\Types.hs:47:13-16                          1868          0    0.0    0.0     0.0    0.0
+   basicUnsafeReplicate        Data.Vector.Unboxed.Base         internal\unbox-tuple-instances:(32,3)-(36,32)      1798      21001    0.0    0.0     0.1    0.0
+    basicUnsafeReplicate       Data.Vector.Unboxed.Base         Data\Vector\Unboxed\Base.hs:325:3-82               1829      21001    0.0    0.0     0.0    0.0
+     basicUnsafeReplicate      Data.Vector.Generic.Mutable.Base Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16) 1830      21001    0.0    0.0     0.0    0.0
+      basicSet                 Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:130:3-55          1849      21001    0.0    0.0     0.0    0.0
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1850      21001    0.0    0.0     0.0    0.0
+        setByteArray#          Data.Primitive.Types             Data\Primitive\Types.hs:163:521-878                1851      21001    0.0    0.0     0.0    0.0
+         internal              Control.Monad.Primitive          Control\Monad\Primitive.hs:97:3-21                 1852      21001    0.0    0.0     0.0    0.0
+         setByteArray#.i       Data.Primitive.Types             Data\Primitive\Types.hs:163:596-619                1853      21001    0.0    0.0     0.0    0.0
+         setByteArray#.n       Data.Primitive.Types             Data\Primitive\Types.hs:163:660-683                1854      21001    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   1831      21001    0.0    0.0     0.0    0.0
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1848      21001    0.0    0.0     0.0    0.0
+    basicUnsafeReplicate       Types                            library\Types.hs:92:5-77                           1799      21001    0.0    0.0     0.0    0.0
+     basicUnsafeReplicate      Data.Vector.Generic.Mutable.Base Data\Vector\Generic\Mutable\Base.hs:(94,3)-(98,16) 1800      21001    0.0    0.0     0.0    0.0
+      basicSet                 Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:130:3-55          1821      21001    0.0    0.0     0.0    0.0
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1822      21001    0.0    0.0     0.0    0.0
+        setByteArray#          Data.Primitive.Types             Data\Primitive\Types.hs:166:530-889                1824      21001    0.0    0.0     0.0    0.0
+         internal              Control.Monad.Primitive          Control\Monad\Primitive.hs:97:3-21                 1826      21001    0.0    0.0     0.0    0.0
+         setByteArray#.i       Data.Primitive.Types             Data\Primitive\Types.hs:166:606-629                1827      21001    0.0    0.0     0.0    0.0
+         setByteArray#.n       Data.Primitive.Types             Data\Primitive\Types.hs:166:670-693                1828      21001    0.0    0.0     0.0    0.0
+      basicUnsafeNew           Data.Vector.Primitive.Mutable    Data\Vector\Primitive\Mutable.hs:(96,3)-(102,37)   1801      21001    0.0    0.0     0.0    0.0
+       primitive               Control.Monad.Primitive          Control\Monad\Primitive.hs:94:3-16                 1820      21001    0.0    0.0     0.0    0.0
+   step.m                      ByteStringIter                   library\ByteStringIter.hs:25:13-27                 1855      21001    0.0    0.0     0.0    0.0

@@ -3,7 +3,6 @@ import Solver
 import Data.ByteString as B
 import ByteStringIter
 import qualified Data.Vector.Fusion.Stream.Monadic as S
-import PrintMatrix
 
 
 main :: IO ()
@@ -12,13 +11,14 @@ main = do
 
     let
       {-# INLINE step #-}
-      step acc m = do
+      step !acc !m = do
           r <- solve m
           if r
           then return (acc + 1)
           else return acc
 
-    n <- withStreamM bs (S.foldlM' step (0::Int). S.take 3000)
+    n <- withStreamM bs (S.foldlM' step (0::Int))
+
 
     print n
     return ()

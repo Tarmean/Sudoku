@@ -9,7 +9,7 @@
 {-# LANGUAGE ConstraintKinds #-}
 -- {-# LANGUAGE QuantifiedConstraints #-}
 module Types where
-import Data.Vector.Unboxed 
+import Data.Vector.Unboxed  (Vector, Unbox, MVector)
 import qualified Data.Vector.Primitive as P
 import qualified Data.Vector.Generic.Mutable as M
 import qualified Data.Vector.Generic as G
@@ -18,32 +18,36 @@ import Control.Monad (liftM)
 import Data.Primitive.Types
 import Data.Bits
 import GHC.Word
-import Data.Vector.Fusion.Util (Id)
+import Data.Vector.Fusion.Util (Id(..))
 import qualified Data.Vector.Unboxed.Mutable as U
 import Control.Monad.Primitive
-import Data.Coerce
 
 -- class (forall a b. Coercible a b => Coercible (m a) (m b)) => Representational m where
 
-data Matrix s
+newtype Matrix
     = Matrix
-    { mCells ::  U.MVector s (DigitSet, Bool)
+    { mCells ::  U.MVector RealWorld (DigitSet, Bool)
     }
 {-# INLINE writeLin #-}
-writeLin ::  (PrimMonad m) => Matrix (PrimState m) -> Int -> (DigitSet, Bool) -> m ()
+writeLin ::  Matrix  -> Int -> (DigitSet, Bool) -> IO ()
 writeLin = M.write . mCells
 
-data Range
+newtype Range
   = Range
   { rIndices :: (S.Stream Id Int)
-  , rLen :: !Int
   }
-data SMinimum = SJust !Int !DigitSet !Int | SNothing
+get2D :: Int -> (Int, Int)
+get2D i = (row, col)
+  where (row, col) = i `divMod` 9
+instance Show Range where
+    show (Range a) = show $ map get2D $ unId $ S.toList a
+
+data SMinimum = SJust !Int !DigitSet !Int | SNothing deriving Show
 newtype DigitSet = DigitSet Word16
   deriving (Bits, Eq, Prim)
 
 toDigitSet :: Int -> DigitSet
-toDigitSet i = DigitSet 1 `shiftL` i
+toDigitSet i = DigitSet 1 `shiftL` (i-1)
 instance Unbox DigitSet
 setFromList :: [Int] -> DigitSet
 setFromList ls = DigitSet (loop [1..9] ls 0)

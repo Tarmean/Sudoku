@@ -1,43 +1,48 @@
+{-# Language FlexibleContexts #-}
 module HiddenSingletonPass (applyHiddenSingletons) where
-import Control.Monad.Primitive
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Data.Bits
 
+import Shape hiding (SPair)
 import Types
 import WriteCell
 import StreamSlice
-import Trace
-import Shape
-import Data.Monoid
 
-data HiddenSingleton = None | OnlyAt !Int | Multiple
+-- {-# INLINE applyHiddenSingletons #-}
+applyHiddenSingletons ::  Matrix -> IO Bool
+applyHiddenSingletons !m = do
+   a <- shortCutFromTo 0 8 (hiddenSingletonPass m . row)
+   if a then return True
+   else do
+       b <- shortCutFromTo 0 8 (hiddenSingletonPass m . col)
+       if b then return True
+       else shortCutFromTo 0 2 (\i -> shortCutFromTo 0 2 (\j -> hiddenSingletonPass m (square i j)))
 
-{-# INLINE applyHiddenSingletons #-}
-applyHiddenSingletons ::  (PrimMonad m) => Matrix (PrimState m) -> m Bool
-applyHiddenSingletons m = getAny <$> mapRegions hiddenSingletonPass
+{-# INLINE hiddenSingletonPass #-}
+hiddenSingletonPass :: Matrix -> Range -> IO Bool
+hiddenSingletonPass !m !r =  do
+    let stream = S.map snd $ toStream m r
+    mask <- getSingletons stream
+    let {-# INLINE fixFinds #-}
+        fixFinds !idx !set = case set .&. mask of
+            found ->
+              if found /= notFound
+              then const True <$> fixCell idx found m
+              else return False
+    if mask /= notFound
+    then do
+        mapMatrixM fixFinds m r
+    else do
+        return False
+  where notFound = DigitSet 0
+getSingletons :: S.Stream IO (DigitSet) -> IO DigitSet
+getSingletons s = do
+    SPair a b <- S.foldl' step (SPair notFound notFound) s
+    return (a \\ b)
   where
-
-    {-# INLINE hiddenSingletonPass #-}
-    hiddenSingletonPass r =  shortCutFromTo 1 9 (step r)
-
     {-# INLINE step #-}
-    step !r !i = do
-        let !mask = toDigitSet i
-        h <- searchHiddenSingleton mask (toStream m r)
-        case h of
-           OnlyAt idx -> do
-               trace ("hidden singleton : " ++ show (get2D idx)) (return ())
-               fixCell idx mask m
-               return (Any True)
-           _ -> return (Any False)
+    step (SPair covered overlap) (i) = SPair (covered .|. i) (overlap .|. (covered .&. i))
+    notFound = DigitSet 0
 
-{-# INLINE searchHiddenSingleton #-}
-searchHiddenSingleton :: Monad m => DigitSet -> S.Stream m (Int, DigitSet) -> m HiddenSingleton
-searchHiddenSingleton !mask s = S.foldl step None s
-   where
-     step Multiple _ = Multiple
-     step a (idx, set)
-       | (set .&. mask) /= DigitSet 0 = case a of
-           None -> OnlyAt idx
-           _ -> Multiple
-       | otherwise = a
+data SPair = SPair !DigitSet !DigitSet
+  deriving Show
