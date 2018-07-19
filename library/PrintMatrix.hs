@@ -1,7 +1,6 @@
 {-# Language TypeFamilies #-}
 module PrintMatrix (printMatrix) where
 import qualified Data.Vector.Fusion.Stream.Monadic as S
-import Control.Monad.Primitive
 
 import Types
 import StreamSlice
@@ -9,7 +8,7 @@ import Shape
 
 import Control.Monad
 
-printMatrix :: Matrix  RealWorld -> IO ()
+printMatrix :: Matrix  -> IO ()
 printMatrix m =
      forM_ [0..8] $ \i -> do
          rowString <- formatRow $ getRow i

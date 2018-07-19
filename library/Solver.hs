@@ -1,7 +1,6 @@
 {-# Language ScopedTypeVariables #-}
 {-# Language TypeFamilies #-}
 module Solver (solve) where
-import Control.Monad.Primitive
 import qualified Data.Vector.Generic.Mutable as G
 import PreemptivePass
 import HiddenSingletonPass
@@ -13,7 +12,7 @@ import TestSolution
 import Trace
 
 
-solve ::  Matrix  (PrimState IO) -> IO Bool
+solve ::  Matrix  -> IO Bool
 solve !m = debug '0' m >> loopHiddenSingletons
   where
       loopHiddenSingletons = do
@@ -37,7 +36,7 @@ solve !m = debug '0' m >> loopHiddenSingletons
               SNothing -> checkComplete m
 
 {-# INLINE doRecursion #-}
-doRecursion :: (m ~ IO) => DigitSet -> Int -> Int -> Matrix  (PrimState m) -> m Bool
+doRecursion :: DigitSet -> Int -> Int -> Matrix   -> IO Bool
 doRecursion !oldSet !idx !curTry !m
     | not (mask `isSubsetOf` oldSet) = return False
     | otherwise = do

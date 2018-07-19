@@ -6,7 +6,6 @@ import GHC.Word
 import Foreign.ForeignPtr       (withForeignPtr)
 import Foreign.Ptr
 import Foreign.Storable
-import Control.Monad.Primitive
 import Data.Bits
 
 import Types
@@ -18,7 +17,7 @@ data ParserState = ParserState !Int !(Ptr Word8) !Int
 -- digitSets = V.iterateN 9 (`shiftL` 1) (DigitSet 1)
 
 -- {-# INLINE step #-}
-step :: ParserState -> IO (S.Step ParserState (Matrix RealWorld))
+step :: ParserState -> IO (S.Step ParserState Matrix)
 step (ParserState !offset !ptr !len)
     | len - offset < 81 = return S.Done
     | otherwise = do
@@ -39,6 +38,6 @@ newLineWidth :: Int
 newLineWidth = 1
 
 {-# INLINE withStreamM #-}
-withStreamM :: ByteString -> (S.Stream IO (Matrix RealWorld) -> IO r) -> IO r
+withStreamM :: ByteString -> (S.Stream IO Matrix -> IO r) -> IO r
 withStreamM (PS !fp !off !len)  f = withForeignPtr fp $ \p ->
     f (S.Stream step (ParserState off p len))

@@ -1,15 +1,13 @@
 {-# Language ScopedTypeVariables #-}
 module WriteCell where
-import Control.Monad.Primitive
 import Shape
 import Types
 import Data.Bits
 import StreamSlice
 import Trace
-import Data.Vector.Generic.Mutable as G
 
 {-# INLINE fixCell #-}
-fixCell :: Int -> DigitSet -> Matrix (PrimState IO) -> IO ()
+fixCell :: Int -> DigitSet -> Matrix  -> IO ()
 fixCell i mask m = do
     writeLin m i (mask, True)
     let
@@ -29,7 +27,7 @@ fixCell i mask m = do
     changeIndent (-1) 
 
 {-# INLINE applyMask #-}
-applyMask :: Matrix (PrimState IO) -> DigitSet -> Int -> DigitSet -> IO Bool
+applyMask :: Matrix  -> DigitSet -> Int -> DigitSet -> IO Bool
 applyMask m !mask !idx !cur
     |  False = undefined
     | cur' == cur =  return False

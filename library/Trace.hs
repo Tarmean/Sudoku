@@ -1,7 +1,6 @@
 {-# LANGUAGE CPP #-}
 module Trace (trace, debug, changeIndent, traceIO, tindent) where
 import PrintMatrix
-import Control.Monad.Primitive
 import Types
 import System.IO.Unsafe
 import Data.IORef
@@ -27,7 +26,7 @@ trace :: String -> b -> b
 trace a b = unsafePerformIO (traceIO a) `seq` b
 
 {-# INLINE debug #-}
-debug :: Char -> Matrix RealWorld -> IO ()
+debug :: Char -> Matrix -> IO ()
 -- debug x m  = return ()
 debug x m
     = do
@@ -44,7 +43,7 @@ tindent s i = trace (replicate (i * 2) ' ' ++ s )
 {-# INLINE tindent #-}
 {-# INLINE changeIndent #-}
 {-# INLINE trace #-}
-debug :: Char -> Matrix RealWorld -> IO ()
+debug :: Char -> Matrix -> IO ()
 debug x m  = return ()
 traceIO :: [Char] ->  IO ()
 traceIO x  = return ()

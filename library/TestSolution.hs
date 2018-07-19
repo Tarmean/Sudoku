@@ -5,13 +5,12 @@ import Data.Bits
 import Types
 import Shape
 import StreamSlice
-import Control.Monad.Primitive
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Trace
 
 
 {-# INLINE checkComplete #-}
-checkComplete :: PrimMonad m => Matrix (PrimState m) -> m Bool
+checkComplete :: Matrix -> IO Bool
 checkComplete m = allRegions pass
   where
     pass = fmap check . S.foldl' step (Just (DigitSet 0)) . toFullStream m
@@ -25,7 +24,7 @@ checkComplete m = allRegions pass
       | otherwise = trace ("Check failure :" ++ show acc ++ show set) Nothing
 
 {-# INLINE allRegions #-}
-allRegions :: Monad m => (Range -> m Bool) -> m Bool
+allRegions :: (Range -> IO Bool) -> IO Bool
 allRegions f = do
    a <- shortCutFromToAll 0 8 (f . row)
    if not a then return False
@@ -37,7 +36,7 @@ allRegions f = do
 
 
 {-# INLINE shortCutFromToAll #-}
-shortCutFromToAll :: (Monad m) => Int -> Int -> (Int -> m Bool) -> m Bool
+shortCutFromToAll :: Int -> Int -> (Int -> IO Bool) -> IO Bool
 shortCutFromToAll zero end p = loop zero
   where
     loop i
