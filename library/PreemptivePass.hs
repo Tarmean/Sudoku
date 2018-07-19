@@ -9,11 +9,18 @@ import Data.Bits
 import Types
 import WriteCell
 import StreamSlice
+import Shape hiding (SPair)
 
 
 -- {-# INLINE applyPreemptives #-}
 applyPreemptives :: Matrix  -> IO Bool
-applyPreemptives !m = anyRegions (preemptivePass m)
+applyPreemptives !m = do
+   a <- shortCutFromTo 0 8 (preemptivePass m . row)
+   if a then return True
+   else do
+       b <- shortCutFromTo 0 8 (preemptivePass m . col)
+       if b then return True
+       else shortCutFromTo 0 2 (\i -> shortCutFromTo 0 2 (\j -> preemptivePass m (square i j)))
 
 {-# INLINE preemptivePass #-}
 preemptivePass :: Matrix -> Range -> IO Bool

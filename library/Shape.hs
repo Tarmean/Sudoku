@@ -40,25 +40,19 @@ col c = fromToStep from to step
     step = sudokuCols
 
 
-data SPair = SPair !Int !Int
+data SLoop = SOuter !Int | SInner !Int !Int
 square :: Int -> Int -> Range
-square !r !c = Range (S.Stream (squareStep r c) (SPair 0 0))
+square !r !c = Range (S.Stream (squareStep r c) (SOuter 0))
 
-squareStep :: Applicative f => Int -> Int -> SPair -> f (S.Step SPair Int)
-squareStep r c = step
+{-# INLINE squareStep #-}
+squareStep :: Applicative f => Int -> Int -> SLoop -> f (S.Step SLoop Int)
+squareStep !r !c = step
   where
     offset = r * 27 + 3 * c
-    calc !a !b = offset + a + b * 9
-    -- This is really messy. At least we only have one yield
-    step !(SPair !a !b) =
-       if a < 3
-       then
-         let idx = calc a b
-         in if idx >= 81
-            then pure (S.Skip (SPair (a+1) b))
-            else pure $ S.Yield idx (SPair (a+1) b)
-       else
-         if b < 2
-         then pure $ S.Skip (SPair 0 (b+1))
-         else pure S.Done -- on 3,2 we are done
+    step (SOuter !a)
+      | a >= 3 = pure S.Done
+      | otherwise = pure (S.Skip (SInner a 0))
+    step (SInner !a !b)
+      | b >= 3 = pure (S.Skip (SOuter (a+1)))
+      | otherwise = pure (S.Yield (a * 9 + b + offset) (SInner a (b+1)))
 

@@ -3,18 +3,26 @@ module HiddenSingletonPass (applyHiddenSingletons) where
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Data.Bits
 
+import Shape hiding (SPair)
 import Types
 import WriteCell
 import StreamSlice
 
 -- {-# INLINE applyHiddenSingletons #-}
 applyHiddenSingletons ::  Matrix -> IO Bool
-applyHiddenSingletons !m = anyRegions (hiddenSingletonPass m)
+applyHiddenSingletons !m = do
+   a <- shortCutFromTo 0 8 (hiddenSingletonPass m . row)
+   if a then return True
+   else do
+       b <- shortCutFromTo 0 8 (hiddenSingletonPass m . col)
+       if b then return True
+       else shortCutFromTo 0 2 (\i -> shortCutFromTo 0 2 (\j -> hiddenSingletonPass m (square i j)))
 
 {-# INLINE hiddenSingletonPass #-}
 hiddenSingletonPass :: Matrix -> Range -> IO Bool
 hiddenSingletonPass !m !r =  do
-    mask <- getSingletons $ S.map snd $ toStream m r
+    let stream = S.map snd $ toStream m r
+    mask <- getSingletons stream
     let {-# INLINE fixFinds #-}
         fixFinds !idx !set = case set .&. mask of
             found ->

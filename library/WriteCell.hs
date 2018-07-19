@@ -5,6 +5,7 @@ import Types
 import Data.Bits
 import StreamSlice
 
+
 -- This propagates found numbers, potentially recursively
 -- that means we mutate the matrix while streaming parts of it but that's fine since
 -- a `isSubsetOf` b => forall c. (a \\ c) `isSubsetOf` b
@@ -15,17 +16,14 @@ fixCell :: Int -> DigitSet -> Matrix  -> IO ()
 fixCell !i !mask !m = do
     writeLin m i (mask, True)
     let
-        {-# INLINE apply #-}
-        apply = mapMatrixM (applyMask m mask) m
-
         (r, c) = i `quotRem` 9
         sRow = (r `quot` 3)
         sCol = (c `quot` 3)
 
 
-    _ <- apply (row r)
-    _ <- apply (col c)
-    _ <- apply (square sRow sCol)
+    _ <- mapMatrixM (applyMask m mask) m (row r)
+    _ <- mapMatrixM (applyMask m mask) m (col c)
+    _ <- mapMatrixM (applyMask m mask) m (square sRow sCol)
     return ()
 
 -- for ~~REASONS~~ this slows way down when m is strict

@@ -29,16 +29,18 @@ library:
   - ghc-prim
   - bytestring
   ghc-options:
-      - -XBangPatterns
       # - -ddump-stg
       # - -dsuppress-all
-      # - -fforce-recomp
+      - -fforce-recomp
       - -O2
+      - -g
       - -fno-liberate-case
       - -funfolding-use-threshold1000
       - -funfolding-keeness-factor1000
-      # - -fllvm
-      # - -optlo-O3
+      - -fllvm
+      - -optlo-O3
+      - -XBangPatterns
+    # extensions:
   source-dirs: library
 
 executables:
