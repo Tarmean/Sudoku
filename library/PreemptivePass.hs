@@ -1,5 +1,6 @@
 {-# Language ScopedTypeVariables #-}
 {-# Language FlexibleContexts #-}
+{-# Language MultiWayIf #-}
 module PreemptivePass (applyPreemptives) where
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Data.Bits
@@ -23,21 +24,21 @@ preemptivePass !m !r = searchPreemptives applySet (toStream m r)
 searchPreemptives :: (DigitSet -> IO Bool) -> S.Stream IO (Int, DigitSet) -> IO Bool
 searchPreemptives applySet (S.Stream step s0) = loop s0 0 (DigitSet 0)
   where
-    -- spec const makes this a ton slower
-    loop !state !count !set = do
+    -- TODO: figure out why SPEC'ing this destry performance
+    loop state !count !set = do
         m <- step state
         case m of
             S.Done -> return False
             S.Skip state' -> loop state' count set
             S.Yield (_, a) state' -> do
                 let set' = a .|. set
-                r <- (check state' (count+1) (set'))
-                if r then return True
-                else loop state' count set
-    {-# INLINE check #-}
-    check !state' !count' !set'
-        | count' == pCount = (applySet set')
-        | count' >= 4 = (return False)
-        | pCount > 4 = return False
-        | otherwise =  loop state' count' set'
-        where pCount = popCount set'
+                    count' = count + 1
+                    pCount = popCount set'
+                    jmp = loop state' count set
+                if 
+                  | count' == pCount  -> applySet set'
+                  | count' >= 4 -> jmp
+                  | pCount > 4 -> jmp
+                  | otherwise -> do
+                      r <- loop state' count' set'
+                      if r then return True else jmp

@@ -21,8 +21,8 @@ step :: ParserState -> IO (S.Step ParserState Matrix)
 step (ParserState !offset !ptr !len)
     | len - offset < 81 = return S.Done
     | otherwise = do
-        vec <- G.replicate 81 (DigitSet ((2^(9::Int))-1), False)
-        let !m = Matrix vec
+        !vec <- G.replicate 81 (DigitSet ((2^(9::Int))-1), False)
+        let m = Matrix vec
         let loop !cur
               | cur >= 81 = return ()
               | otherwise = do
@@ -33,7 +33,7 @@ step (ParserState !offset !ptr !len)
                     _ -> error ("Illegal character " ++ [toEnum$ fromIntegral digit])
                   loop (cur + 1)
         loop 0
-        return (S.Yield (Matrix vec) (ParserState (offset + 81 + newLineWidth) ptr len))
+        return (S.Yield m (ParserState (offset + 81 + newLineWidth) ptr len))
 newLineWidth :: Int
 newLineWidth = 1
 

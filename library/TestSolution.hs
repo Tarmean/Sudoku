@@ -8,6 +8,8 @@ import StreamSlice
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 
 
+-- We could check for overlapping solutions here and bail faster
+-- but that's more complex and makes no difference to overall performance
 {-# INLINE checkComplete #-}
 checkComplete :: Matrix -> IO Bool
 checkComplete m = allRegions pass
