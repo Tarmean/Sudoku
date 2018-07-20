@@ -8,7 +8,6 @@ import Data.Vector.Fusion.Util (Id(..))
 import Types
 import Shape
 import Data.Bits
-import GHC.Types ( SPEC(..) )
 
 -- This weird control ping pong is immensely ugly. This is basically
 -- `shortcutPass pass ranges = S.or (S.map pass ranges)` but we can't abstract over

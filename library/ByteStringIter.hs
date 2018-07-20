@@ -2,6 +2,7 @@ module ByteStringIter (withStreamM) where
 import qualified Data.Vector.Generic.Mutable as G
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Data.ByteString.Internal
+import Control.Concurrent.Async as A
 import GHC.Word
 import Foreign.ForeignPtr       (withForeignPtr)
 import Foreign.Ptr
@@ -30,14 +31,22 @@ step (ParserState !offset !ptr !len)
                   case digit of
                     46 ->  return ()
                     i | i >= 49 && i <= 58 -> fixCell cur (DigitSet 1 `shiftL` fromIntegral (digit - 49 )) m
-                    _ -> error ("Illegal character " ++ [toEnum$ fromIntegral digit])
+                    _ -> error ("Illegal character " ++ show digit)
                   loop (cur + 1)
         loop 0
-        return (S.Yield m (ParserState (offset + 81 + newLineWidth) ptr len))
-newLineWidth :: Int
-newLineWidth = 1
+        return (S.Yield m (ParserState (offset + lineWidth) ptr len))
+lineWidth :: Int
+lineWidth = 82
+
+
 
 {-# INLINE withStreamM #-}
-withStreamM :: ByteString -> (S.Stream IO Matrix -> IO r) -> IO r
-withStreamM (PS !fp !off !len)  f = withForeignPtr fp $ \p ->
-    f (S.Stream step (ParserState off p len))
+withStreamM :: (Show r) => Int -> ByteString -> (S.Stream IO Matrix -> IO r) -> (r -> r -> r) -> IO r
+withStreamM threads (PS !fp !off !len)  f combine  = withForeignPtr fp $ \p -> do
+    let
+        processChunk i = f (S.Stream step (ParserState (chunkLen*(i-1)+off)  p end))
+          where end = if i == threads then len else chunkLen * i + off
+        chunkLen = ((len `div` lineWidth) `div` threads) * lineWidth
+        offsets = [1..threads]
+    ls <- A.mapConcurrently processChunk offsets
+    return (foldr1 combine ls)

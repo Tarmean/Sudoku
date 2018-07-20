@@ -28,12 +28,13 @@ library:
   - primitive
   - ghc-prim
   - bytestring
+  - async
   ghc-options:
       # - -ddump-stg
       # - -dsuppress-all
       - -fforce-recomp
       - -O2
-      - -g
+      # - -g
       - -fno-liberate-case
       - -funfolding-use-threshold1000
       - -funfolding-keeness-factor1000
@@ -52,6 +53,7 @@ executables:
     - Sudoku
     ghc-options:
     - -rtsopts
+    - -threaded
 
 benchmarks:
   Sudoku-benchmarks:

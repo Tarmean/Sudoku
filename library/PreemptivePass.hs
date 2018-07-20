@@ -9,7 +9,7 @@ import Data.Bits
 import Types
 import WriteCell
 import StreamSlice
-import Shape hiding (SPair)
+import Shape
 
 
 -- {-# INLINE applyPreemptives #-}

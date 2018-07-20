@@ -3,7 +3,7 @@ module HiddenSingletonPass (applyHiddenSingletons) where
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Data.Bits
 
-import Shape hiding (SPair)
+import Shape
 import Types
 import WriteCell
 import StreamSlice
