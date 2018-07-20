@@ -30,10 +30,8 @@ hiddenSingletonPass !m !r =  do
               then const True <$> fixCell idx found m
               else return False
     if mask /= notFound
-    then do
-        mapMatrixM fixFinds m r
-    else do
-        return False
+    then do mapMatrixM fixFinds m r
+    else do return False
   where notFound = DigitSet 0
 getSingletons :: S.Stream IO (DigitSet) -> IO DigitSet
 getSingletons s = do
@@ -41,7 +39,7 @@ getSingletons s = do
     return (a \\ b)
   where
     {-# INLINE step #-}
-    step (SPair covered overlap) (i) = SPair (covered .|. i) (overlap .|. (covered .&. i))
+    step (SPair covered overlap) i = SPair (covered .|. i) (overlap .|. (covered .&. i))
     notFound = DigitSet 0
 
 data SPair = SPair !DigitSet !DigitSet

@@ -31,7 +31,9 @@ preemptivePass !m !r = searchPreemptives applySet (toStream m r)
 searchPreemptives :: (DigitSet -> IO Bool) -> S.Stream IO (Int, DigitSet) -> IO Bool
 searchPreemptives applySet (S.Stream step s0) = loop s0 0 (DigitSet 0)
   where
-    -- TODO: figure out why SPEC'ing this destry performance
+    -- TODO: SPEC'ing destroys performance. Is it because loop isn't a join
+    -- point?  Using a strict list as stack is only ~11% slower so using an
+    -- unboxed array might be faster
     loop state !count !set = do
         m <- step state
         case m of

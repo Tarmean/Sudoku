@@ -20,11 +20,12 @@ fixCell !i !mask !m = do
         sRow = (r `quot` 3)
         sCol = (c `quot` 3)
 
-
     _ <- mapMatrixM (applyMask m mask) m (row r)
     _ <- mapMatrixM (applyMask m mask) m (col c)
     _ <- mapMatrixM (applyMask m mask) m (square sRow sCol)
     return ()
+
+
 
 -- for ~~REASONS~~ this slows way down when m is strict
 {-# INLINE applyMask #-}

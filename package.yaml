@@ -24,7 +24,6 @@ library:
   dependencies:
   - base
   - vector
-  - logict
   - primitive
   - ghc-prim
   - bytestring
@@ -32,7 +31,7 @@ library:
   ghc-options:
       # - -ddump-stg
       # - -dsuppress-all
-      - -fforce-recomp
+      # - -fforce-recomp
       - -O2
       # - -g
       - -fno-liberate-case

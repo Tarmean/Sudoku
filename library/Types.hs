@@ -30,7 +30,10 @@ newtype Matrix
     }
 {-# INLINE writeLin #-}
 writeLin ::  Matrix  -> Int -> (DigitSet, Bool) -> IO ()
-writeLin = M.write . mCells
+writeLin = M.unsafeWrite . mCells
+{-# INLINE readLin #-}
+readLin ::  Matrix  -> Int -> IO (DigitSet, Bool)
+readLin = M.unsafeRead . mCells
 
 newtype Range
   = Range

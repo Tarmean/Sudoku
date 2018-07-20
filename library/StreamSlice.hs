@@ -2,17 +2,15 @@
 {-# Language ExistentialQuantification #-}
 {-# Language ScopedTypeVariables #-}
 module StreamSlice where
-import qualified Data.Vector.Generic.Mutable as G
 import qualified Data.Vector.Fusion.Stream.Monadic as S
 import Data.Vector.Fusion.Util (Id(..))
 import Types
 import Shape
 import Data.Bits
 
--- This weird control ping pong is immensely ugly. This is basically
--- `shortcutPass pass ranges = S.or (S.map pass ranges)` but we can't abstract over
--- the if blocks because `shortcutPass pass (rows S.++ cols S.++ squares)`
--- is ~50-100% slower
+-- Build/fold fusion seems to work a lot better here. 
+-- Todo: try build/fold style Range, using strength reduced loops for reading
+-- and nested row/col loops for writing
 {-# INLINE anyRegions #-}
 anyRegions :: (Range -> IO Bool) -> IO Bool
 anyRegions f = do
@@ -29,9 +27,9 @@ toStream m r = S.map (\(idx,val,_) -> (idx, val)) . S.filter (\(_,_,b) -> not b)
 
 {-# INLINE toFullStream #-}
 toFullStream :: Matrix -> Range -> S.Stream IO (Int, DigitSet, Bool)
-toFullStream (Matrix vec) r = S.mapM doRead (liftStream $ rIndices r)
+toFullStream m r = S.mapM doRead (liftStream $ rIndices r)
   where
-    doRead i = format i <$> G.read vec i
+    doRead i = format i <$> readLin m i
     format i (set, fixed) = (i, set, fixed)
 {-# INLINE liftStream #-} 
 liftStream :: S.Stream Id a -> S.Stream IO a

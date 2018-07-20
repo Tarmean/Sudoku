@@ -42,17 +42,16 @@ col c = fromToStep from to step
 
 data SLoop = SOuter !Int | SInner !Int !Int
 square :: Int -> Int -> Range
-square !r !c = Range (S.Stream (squareStep r c) (SOuter 0))
+square !r !c = Range (S.Stream (squareStep r c) (SOuter (-9)))
 
-{-# INLINE squareStep #-}
+-- {-# INLINE squareStep #-}
 squareStep :: Applicative f => Int -> Int -> SLoop -> f (S.Step SLoop Int)
 squareStep !r !c = step
   where
-    offset = r * 27 + 3 * c
+    offset = r * 27 + 3 * c + 10
     step (SOuter !a)
-      | a >= 3 = pure S.Done
-      | otherwise = pure (S.Skip (SInner a 0))
+      | a > 9 = pure S.Done
+      | otherwise = pure (S.Skip (SInner a (-1)))
     step (SInner !a !b)
-      | b >= 3 = pure (S.Skip (SOuter (a+1)))
-      | otherwise = pure (S.Yield (a * 9 + b + offset) (SInner a (b+1)))
-
+      | b > 1 = pure (S.Skip (SOuter (a+9)))
+      | otherwise = pure (S.Yield (offset + a + b) (SInner a (b+1)))
