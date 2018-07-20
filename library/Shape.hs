@@ -55,3 +55,31 @@ squareStep !r !c = step
     step (SInner !a !b)
       | b > 1 = pure (S.Skip (SOuter (a+9)))
       | otherwise = pure (S.Yield (offset + a + b) (SInner a (b+1)))
+
+
+fromStepTo :: Int -> Int -> Int -> (Int -> Int -> IO Bool) -> IO Bool
+fromStepTo !to !strRedBase !strRedStep cont = loop 0 strRedBase False
+  where
+    loop !cur !linearIdx !acc
+      | cur > to = return acc
+      | otherwise = do
+          r <- cont linearIdx cur
+          loop (cur + 1) (linearIdx + strRedStep) (acc || r)
+{-# INLINE fromStepTo #-}
+{-# INLINE writeRow #-}
+{-# INLINE writeCol #-}
+{-# INLINE writeSquare #-}
+-- | Build/fold style loop for rows that doesn't shortcut
+writeRow :: Int -> (Int -> Int -> Int -> IO Bool) -> IO Bool
+writeRow !r cont = fromStepTo 8 (r*9) 1 $ \linIdx i -> cont linIdx r i 
+-- | Build/fold style loop for rows that doesn't shortcut
+writeCol :: Int -> (Int -> Int -> Int -> IO Bool) -> IO Bool
+writeCol !c cont = fromStepTo 8 c 9 $ \linIdx i -> cont linIdx i c
+
+writeSquare :: Int -> Int -> (Int -> Int -> Int -> IO Bool) -> IO Bool
+writeSquare !squareRow !squareCol cont
+    = fromStepTo 2 (baseRow * 9) 9 $ \strengthReducedRow r ->
+      fromStepTo 2 (strengthReducedRow + baseCol) 1 $ \linIdx c -> cont linIdx (baseRow + r) (baseCol + c) 
+  where
+    baseRow = 3 * squareRow
+    baseCol = 3 * squareCol

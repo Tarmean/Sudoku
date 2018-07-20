@@ -11,33 +11,36 @@ import StreamSlice
 -- a `isSubsetOf` b => forall c. (a \\ c) `isSubsetOf` b
 -- it might have some weird performance problem so TODO: profile an alternative where
 -- we loop over the matrix until we find a fixpoint after each change
-{-# INLINE fixCell #-}
-fixCell :: Int -> DigitSet -> Matrix  -> IO ()
-fixCell !i !mask !m = do
-    writeLin m i (mask, True)
+-- {-# INLINE fixCell #-}
+fixCell :: Int -> Int -> Int -> DigitSet -> Matrix  -> IO ()
+fixCell !idx !r !c !mask !m = do
+    writeLin m idx (mask, True)
     let
-        (r, c) = i `quotRem` 9
         sRow = (r `quot` 3)
         sCol = (c `quot` 3)
 
-    _ <- mapMatrixM (applyMask m mask) m (row r)
-    _ <- mapMatrixM (applyMask m mask) m (col c)
-    _ <- mapMatrixM (applyMask m mask) m (square sRow sCol)
+    _ <- writeRow r (onMatrix m (applyMask m mask))
+    _ <- writeCol c (onMatrix m (applyMask m mask))
+    _ <- writeSquare sRow sCol (onMatrix m (applyMask m mask))
     return ()
 
+{-# INLINE fixCellLin #-}
+fixCellLin :: Int -> DigitSet -> Matrix -> IO  ()
+fixCellLin !idx !mask m = fixCell idx r c mask m
+  where (r, c) = idx `quotRem` 9
 
 
 -- for ~~REASONS~~ this slows way down when m is strict
 {-# INLINE applyMask #-}
-applyMask :: Matrix  -> DigitSet -> Int -> DigitSet -> IO Bool
-applyMask m !mask !idx !cur
+applyMask :: Matrix  -> DigitSet -> Int -> Int -> Int -> DigitSet -> IO Bool
+applyMask m !mask !idx !r !c !cur
     -- This is important, otherwise PreemptivePass thinks it's helping when all
     -- other entries don't overlap with the preemptive set and loops forever
     | cur' == cur =  return False
     -- This is a hack so we don't have to keep track which entries made up a PreemptivePass pair
     | cur `isSubsetOf` mask = return False
     | isSingleton cur' = do
-        fixCell idx cur' m
+        fixCell idx r c cur' m
         return True
     | otherwise = do
         writeLin m idx (cur', False) 

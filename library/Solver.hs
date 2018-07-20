@@ -46,6 +46,6 @@ doRecursion !oldSet !idx !curTry !m
     | otherwise = do
         vec' <-  G.clone (mCells  m)
         let m' = (Matrix vec')
-        fixCell idx mask m'
+        fixCellLin idx mask m'
         solve m'
     where !mask = toDigitSet curTry

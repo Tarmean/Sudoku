@@ -23,4 +23,3 @@ main = do
 
     print n
     return ()
-

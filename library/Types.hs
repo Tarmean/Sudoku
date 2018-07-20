@@ -21,9 +21,14 @@ import GHC.Word
 import Data.Vector.Fusion.Util (Id(..))
 import qualified Data.Vector.Unboxed.Mutable as U
 import Control.Monad.Primitive
+import Text.Printf
+
+instance PrintfArg DigitSet where
+   formatArg m _ = shows m
 
 -- class (forall a b. Coercible a b => Coercible (m a) (m b)) => Representational m where
 
+data MDigitSet = DJust !DigitSet | DNothing deriving Show
 newtype Matrix
     = Matrix
     { mCells ::  U.MVector RealWorld (DigitSet, Bool)

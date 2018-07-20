@@ -11,28 +11,38 @@ import StreamSlice
 -- {-# INLINE applyHiddenSingletons #-}
 applyHiddenSingletons ::  Matrix -> IO Bool
 applyHiddenSingletons !m = do
-   a <- shortCutFromTo 0 8 (hiddenSingletonPass m . row)
-   if a then return True
-   else do
-       b <- shortCutFromTo 0 8 (hiddenSingletonPass m . col)
-       if b then return True
-       else shortCutFromTo 0 2 (\i -> shortCutFromTo 0 2 (\j -> hiddenSingletonPass m (square i j)))
+    a <- shortCutFromTo 0 8 $ \r -> do
+       out <- hiddenSingletonPass m (row r)
+       case out of
+         DNothing -> pure False
+         DJust mask -> writeRow r (onMatrix m (apply mask))
+    if a then return True else do
+        b <- shortCutFromTo 0 8 $ \c -> do
+           out <- hiddenSingletonPass m (col c)
+           case out of
+             DNothing -> pure False
+             DJust mask -> writeCol c (onMatrix m (apply mask))
+        if b then return True else do
+            shortCutFromTo 0 2 $ \r -> shortCutFromTo 0 2 $ \c -> do
+               out <- hiddenSingletonPass m (square r c)
+               case out of
+                 DNothing -> pure False
+                 DJust mask -> writeSquare r c (onMatrix m (apply mask))
+  where
+    apply mask idx r c val
+      | mask .&. val /= notFound =  const True <$> fixCell idx r c (mask .&. val) m
+      | otherwise = return False
 
 {-# INLINE hiddenSingletonPass #-}
-hiddenSingletonPass :: Matrix -> Range -> IO Bool
+hiddenSingletonPass :: Matrix -> Range -> IO MDigitSet
 hiddenSingletonPass !m !r =  do
-    let stream = S.map snd $ toStream m r
-    mask <- getSingletons stream
-    let {-# INLINE fixFinds #-}
-        fixFinds !idx !set = case set .&. mask of
-            found ->
-              if found /= notFound
-              then const True <$> fixCell idx found m
-              else return False
+    mask <- getSingletons $ S.map snd $ toStream m r
     if mask /= notFound
-    then do mapMatrixM fixFinds m r
-    else do return False
-  where notFound = DigitSet 0
+    then do return (DJust  mask)
+    else do return DNothing
+notFound :: DigitSet
+notFound = DigitSet 0
+
 getSingletons :: S.Stream IO (DigitSet) -> IO DigitSet
 getSingletons s = do
     SPair a b <- S.foldl' step (SPair notFound notFound) s
@@ -40,7 +50,6 @@ getSingletons s = do
   where
     {-# INLINE step #-}
     step (SPair covered overlap) i = SPair (covered .|. i) (overlap .|. (covered .&. i))
-    notFound = DigitSet 0
 
 data SPair = SPair !DigitSet !DigitSet
   deriving Show

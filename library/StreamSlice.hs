@@ -8,6 +8,14 @@ import Types
 import Shape
 import Data.Bits
 
+{-# INLINE onMatrix #-}
+onMatrix :: Matrix -> (Int -> Int -> Int -> DigitSet -> IO Bool) -> (Int -> Int -> Int -> IO Bool)
+onMatrix m cont linIdx r c = do
+     (set, b) <- readLin m linIdx
+     if not b
+     then cont linIdx r c set
+     else return False
+
 -- Build/fold fusion seems to work a lot better here. 
 -- Todo: try build/fold style Range, using strength reduced loops for reading
 -- and nested row/col loops for writing

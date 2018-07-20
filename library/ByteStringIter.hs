@@ -30,7 +30,7 @@ step (ParserState !offset !ptr !len)
                   digit <- peek (ptr `plusPtr` (offset + cur)) :: IO Word8
                   case digit of
                     46 ->  return ()
-                    i | i >= 49 && i <= 58 -> fixCell cur (DigitSet 1 `shiftL` fromIntegral (digit - 49 )) m
+                    i | i >= 49 && i <= 58 -> fixCellLin cur (DigitSet 1 `shiftL` fromIntegral (digit - 49 )) m
                     _ -> error ("Illegal character " ++ show digit)
                   loop (cur + 1)
         loop 0
