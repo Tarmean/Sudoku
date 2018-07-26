@@ -29,14 +29,16 @@ library:
   - bytestring
   - async
   ghc-options:
-      # - -ddump-stg
-      # - -dsuppress-all
-      # - -fforce-recomp
+      # Order matters, -O2 first:
+      - -fforce-recomp
       - -O2
-      # - -g
+      # surprising 15% speedup
       - -fno-liberate-case
+      # doesn't do much:
       - -funfolding-use-threshold1000
+      # 15% speedup:
       - -funfolding-keeness-factor1000
+      # 20-25% speedup!
       - -fllvm
       - -optlo-O3
       - -XBangPatterns
