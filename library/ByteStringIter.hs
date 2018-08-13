@@ -45,8 +45,9 @@ withStreamM :: (Show r) => Int -> ByteString -> (S.Stream IO Matrix -> IO r) -> 
 withStreamM threads (PS !fp !off !len)  f combine  = withForeignPtr fp $ \p -> do
     let
         processChunk i = f (S.Stream step (ParserState (chunkLen*(i-1)+off)  p end))
-          where end = if i == threads then len else chunkLen * i + off
-        chunkLen = ((len `div` lineWidth) `div` threads) * lineWidth
-        offsets = [1..threads]
+          where end = if i == chunkCount then len else chunkLen * i + off
+        chunkLen = ((len `div` lineWidth) `div` chunkCount) * lineWidth
+        offsets = [1..chunkCount]
+        chunkCount = threads * 8
     ls <- A.mapConcurrently processChunk offsets
     return (foldr1 combine ls)
